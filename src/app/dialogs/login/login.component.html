@@ -1,0 +1,62 @@
+<h1 *ngIf="!OTP_Window" mat-dialog-title>Авторизуйтесь любым из способов</h1>
+<div mat-dialog-content>
+
+  <form class="login-form" [formGroup]="form" (ngSubmit)="submit($event)">
+    <div *ngIf="!OTP_Window" class="signin-btn">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Номер телефона</mat-label>
+        <span matPrefix>+38 &nbsp;</span>
+        <input type="text" name="phone" formControlName="mobileNumber" matInput placeholder="(555)-555-12-34"
+          class="form-control" [textMask]="{mask: phoneMask}" required>
+        <mat-hint *ngIf="f.valid">✓</mat-hint>
+        <mat-error *ngIf="f.hasError('pattern') && f.touched" style="margin-bottom: 1.25em">
+          Для продолжения номер <strong>обязательный</strong>. Или попробуйте войти с помощью кнопок ниже
+        </mat-error>
+        <mat-icon matSuffix>mode_edit</mat-icon>
+      </mat-form-field>
+      <button mat-raised-button [disabled]="form.invalid" [formAction]="submit" class="enter"
+        color="primary">Войти</button>
+    </div>
+    <div id="recaptcha-container"></div>
+    <div *ngIf="OTP_Window" class="otp" style="text-align: center;">
+      <div *ngIf="isLoading; else elseBlock" class="otpDiv">
+        <h3>{{message}}</h3>
+        <ng-otp-input (onInputChange)="onOtpChange($event)" [config]="{
+                    length:6, 
+                    allowNumbersOnly: true,
+                    inputStyles: {
+                        'border': 'solid 1px #ff5c00',
+                        'box-shadow': '5px 5px 5px #6262629c'
+                    }
+                }"></ng-otp-input>
+      </div>
+      <ng-template #elseBlock class="loading">
+        <h3>{{message}}</h3>
+        <mat-progress-bar mode="query"></mat-progress-bar>
+      </ng-template>
+    </div>
+  </form>
+  <mat-divider></mat-divider>
+  <section *ngIf="!OTP_Window">
+    <div style="display: flex; align-items: center; justify-content:center;">
+      <h3 style="font-family: montserrat">Социальные сети</h3>
+    </div>
+    <mat-divider></mat-divider>
+    <div style="display: flex; align-items: center; justify-content:center;">
+
+      <button mat-button style="padding: 1rem;" (click)="signInGoogle()">
+        <mat-icon style="width: 50px; height:30px" svgIcon="google"></mat-icon> Войти с помощью Google
+      </button>
+    </div>
+    <div style="display: flex; align-items: center; justify-content:center;">
+
+      <button mat-button style="padding: 1rem;">
+        <mat-icon style="width: 50px; height:30px" svgIcon="facebook"></mat-icon> Войти с помощью Facebook
+      </button>
+    </div>
+  </section>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-stroked-button [disabled]="OTP_Window" mat-dialog-close>Закрыть</button>
+</div>

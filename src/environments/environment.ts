@@ -14,7 +14,7 @@ export const environment = {
     appId: "1:336956340236:web:e62786b00809d449699629",
     measurementId: "G-QSF4E7NRMD"
   },
-  vapidKey: "BFXi_Wczk-SJrJ5Os4zs-UDXVXbdaPInEa0tXcUtRisuA1UCJaGbBRd3B05qWFUD9OUJj7kw19A-aAj1phd8U74"
+  vapidKey: "BF7WaWQnJwo8dE8zTNStw4kxl6Gq8S3N9j3V2BbIYC_G79h75GyItp7VLZ7V7lT3pQ4Tu3hM9c_aN15EdwPBsqM"
 };
 
 /*
