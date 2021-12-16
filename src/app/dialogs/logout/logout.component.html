@@ -1,0 +1,5 @@
+<h2 mat-dialog-title>Вы действительно хотите выйти?</h2>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="true" (click)="logOut()">Да</button>
+    <button mat-raised-button color="primary" mat-dialog-close cdkFocusInitial>Нет</button>
+  </mat-dialog-actions>

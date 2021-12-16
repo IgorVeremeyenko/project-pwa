@@ -43,7 +43,9 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
-
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgOtpInputModule } from 'ng-otp-input';
 
 @NgModule({
   declarations: [],
@@ -51,7 +53,12 @@ import {OverlayModule} from '@angular/cdk/overlay';
     CommonModule
   ],
   exports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatRippleModule,
     A11yModule,
+    FormsModule,
+    NgOtpInputModule,
     ClipboardModule,
     CdkStepperModule,
     CdkTableModule,
