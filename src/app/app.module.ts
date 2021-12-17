@@ -18,8 +18,9 @@ import { LottieModule } from 'ngx-lottie';
 import player from 'lottie-web';
 import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
-import { DetailsComponent } from './components/details/details.component';
+import { DetailsComponent } from './dialogs/details/details.component';
 import { ListComponent } from './components/list/list.component';
+import { ReadyNoPipe } from './ready-no.pipe';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -34,7 +35,8 @@ export function playerFactory() {
     LoginComponent,
     LogoutComponent,
     DetailsComponent,
-    ListComponent
+    ListComponent,
+    ReadyNoPipe
   ],
   imports: [
     TextMaskModule,

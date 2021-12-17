@@ -4,6 +4,7 @@ import { HomeComponent } from './components/home/home.component';
 import { AuthComponent } from './auth/auth.component';
 import { GuardService } from './services/guard.service';
 import { ListComponent } from './components/list/list.component';
+import { DetailsComponent } from './dialogs/details/details.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,9 @@ const routes: Routes = [
   },
   {
     path: 'table', component: ListComponent
+  },
+  {
+    path: 'details', component: DetailsComponent
   },
   {
     path: '**', redirectTo: ''

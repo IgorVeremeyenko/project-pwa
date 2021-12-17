@@ -1,0 +1,49 @@
+<h1 mat-dialog-title style="width: 400px;">
+  <button mat-button matTooltip="Вызвать">
+    <mat-icon>phone_iphone</mat-icon><span style="font-size: x-large;"> {{data.client.phoneNumber}}</span>
+  </button>
+  <button mat-icon-button class="close-icon" (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+</h1>
+<mat-dialog-content>
+  <mat-label class="register"> <small style="display: grid;grid-template-columns: 30px 1fr;">
+      <mat-icon class="calendar">
+        event_note
+      </mat-icon>Зарегистрировано:
+    </small></mat-label>
+  {{data.device.dateToAdd | date: 'd.MM.yyyy, h:mm'}}
+  <mat-label class="person">
+    <small>Персона:</small>
+  </mat-label>
+  {{data.client.name}}
+  <div class="detail">
+    <mat-label> <small>Устройство:</small></mat-label>
+    {{data.device.deviceName}}
+  </div>
+</mat-dialog-content>
+<mat-dialog-footer>
+  <mat-divider></mat-divider>
+  <mat-label class="status"> <small>Состояние ремонта:</small></mat-label>
+  <div class="status-label">
+    <div style="display: flex;
+    align-items: center;
+    column-gap: 10px;">
+      <mat-icon *ngIf="!data.device.status" color="warn">settings_suggest</mat-icon>
+      <mat-icon *ngIf="data.device.status" color="accent">verified</mat-icon>
+      {{data.device.status | readyNo}}
+    </div>
+    <button *ngIf="isLoading" mat-flat-button color="accent" disabled>
+      <div  style="display: flex;
+      align-items: center;
+      flex-wrap: nowrap;">
+        <span >
+          Сообщить о готовности
+        </span>
+        <mat-spinner [diameter]="18"></mat-spinner>
+      </div>
+    </button>
+    <button mat-button *ngIf="!isLoading" (click)="fetch()">Сообщить о готовности</button>
+  </div>
+</mat-dialog-footer>

@@ -15,7 +15,7 @@
     min-width: 400px !important;
     box-shadow: 8px 6px 20px 0px rgb(0 0 0 / 79%) !important;
     border-radius: 5px;
-    overflow: hidden !important;
+    
   }
   .mat-header-row, .cdk-header-row{
     background-color: darkslategrey;
@@ -31,11 +31,17 @@
     color: #ffffff;
     text-align: left;
 }
-  
+  .calendar, .phone-icon {
+    position: relative;
+    left: -4px;
+    top: 6px;
+  }
   .mat-table {
     // max-height: 800px;
     // border-spacing: 0 8px !important;
     // width: 1500px;
+    height: 72vh;
+    overflow: auto;
   }
   .mat-row:hover .mat-cell {
     border-color: darkslategrey;
@@ -139,7 +145,7 @@
 
     .mat-table {
       border-radius: 8px;
-      overflow: hidden !important;
+      overflow-y: scroll;
       border-collapse: separate!important;
       border-spacing:0 4px!important;
     }
@@ -194,4 +200,14 @@
   }
 
 }
+
+::-webkit-scrollbar {
+  width: 0.2em;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background-color: darkslategrey;
+  border-radius: 5px;
+}
+
 

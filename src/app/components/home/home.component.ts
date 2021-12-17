@@ -15,6 +15,10 @@ import { initializeApp } from 'firebase/app';
 import { Admin } from 'src/app/interfaces/admin';
 import { Device } from 'src/app/interfaces/device';
 import { GuardService } from 'src/app/services/guard.service';
+import { AddToDetailsService } from 'src/app/services/add-to-details.service';
+import { DetailsComponent } from 'src/app/dialogs/details/details.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material/icon';
 
 @Component({
   selector: 'app-home',
@@ -35,19 +39,22 @@ export class HomeComponent implements OnInit {
   }
   
   dataSource = new MatTableDataSource<Client>(this.users);
-  displayedColumns = ['created', 'phone', 'device', 'status', 'email', 'name', 'actions'];
-  clickedRows = new Set<Client>();
+  displayedColumns = ['created', 'phone', 'device', 'status', 'email', 'name'];
+  // clickedRows = new Set<Client>();
   constructor(breakpointObserver: BreakpointObserver,private readonly data: DataService,      
     private readonly router: Router,
     private readonly dialog: MatDialog,
     private readonly dataService: DataService,
-    private readonly guardService: GuardService
+    private readonly guardService: GuardService,
+    private readonly detailsService: AddToDetailsService,
+    iconRegistry: MatIconRegistry, sanitizer: DomSanitizer
     ) { 
     breakpointObserver.observe(['(max-width: 800px)']).subscribe(result => {
       this.displayedColumns = result.matches ? 
-          ['created', 'phone', 'device', 'status', 'email', 'name', 'actions'] : 
-          ['created', 'phone', 'device', 'status', 'email', 'name', 'actions'];
+          ['created', 'phone', 'device', 'status', 'email', 'name'] : 
+          ['created', 'phone', 'device', 'status', 'email', 'name'];
     });
+    iconRegistry.addSvgIconLiteral('calendar', sanitizer.bypassSecurityTrustHtml('src/assets/svg/event_note_black_24dp.svg'));
   }
 
   ngOnInit(): void {
@@ -68,7 +75,7 @@ export class HomeComponent implements OnInit {
               .subscribe(data => {
               this.users = data;
               this.dataSource = new MatTableDataSource<Client>(this.users);
-              console.log('datasourse loaded', this.users)
+              console.log('datasourse loaded', this.dataSource.data)
               })
             }, error => {
               console.log('Error, вы не админ!')
@@ -118,17 +125,29 @@ export class HomeComponent implements OnInit {
     
   }
 
+  getRecord(value: any){
+    console.log(value)
+    this.detailsService.addItem(value);
+    // this.router.navigate(['details']);
+    const dialogref = this.dialog.open(DetailsComponent, {
+      data: value
+    })
+    dialogref.afterClosed().subscribe(() => {
+      console.log('details closed')
+    })
+  }
+  
   goNext(){
     this.router.navigateByUrl('table');
   }
 
-  logout(){
-    const dialogRef = this.dialog.open(LogoutComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+  // logout(){
+  //   const dialogRef = this.dialog.open(LogoutComponent);
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     console.log('The dialog was closed');
       
-    });
-  }
+  //   });
+  // }
 
   enter(){
     console.log(this.token)
@@ -150,8 +169,8 @@ export class HomeComponent implements OnInit {
     const messaging = getMessaging();
     const vapidKey = environment.vapidKey;
     const myPhone = "tSJd7vpd:APA91bGyhfXFHd3_RQ5z5NJ311ObH2LcOP_dvZAZNTVcNUWG_hpWnaEFhrHjonnGukoRDScjTqSXh0zlCnyh_2qrwgh5XgWjyDZQvo-7Xi7_ht3Vm_3zPsdkG1L5AOn8usYnqJnRgngy"
-    getToken(messaging, { vapidKey: vapidKey }).then((currentToken) => {
-      if (currentToken) {
+    getToken(messaging, { vapidKey: vapidKey }).then((currentToken: any) => {
+      if (currentToken) { 
         this.titleToken = "send .. here!"
         
       } else {
@@ -159,7 +178,7 @@ export class HomeComponent implements OnInit {
         console.log('No registration token available. Request permission to generate one.');
         // ...
       }
-    }).catch((err) => {
+    }).catch((err: any) => {
       console.log('An error occurred while retrieving token. ', err);
       // ...
     });
@@ -174,9 +193,9 @@ export class HomeComponent implements OnInit {
       console.log(this.dataSource)
     })
   }
-  goLogin(){
-    this.router.navigateByUrl('authorization');
-  }
+  // goLogin(){
+  //   this.router.navigateByUrl('authorization');
+  // }
 
   singIn(){
     const provider = new GoogleAuthProvider();
