@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
   }
   
   dataSource = new MatTableDataSource<Client>(this.users);
-  displayedColumns = ['created', 'name', 'device', 'status', 'email', 'phone', 'actions'];
+  displayedColumns = ['created', 'phone', 'device', 'status', 'email', 'name', 'actions'];
   clickedRows = new Set<Client>();
   constructor(breakpointObserver: BreakpointObserver,private readonly data: DataService,      
     private readonly router: Router,
@@ -45,8 +45,8 @@ export class HomeComponent implements OnInit {
     ) { 
     breakpointObserver.observe(['(max-width: 800px)']).subscribe(result => {
       this.displayedColumns = result.matches ? 
-          ['created', 'name', 'device', 'status', 'email', 'phone', 'actions'] : 
-          ['created', 'name', 'device', 'status', 'email', 'phone', 'actions'];
+          ['created', 'phone', 'device', 'status', 'email', 'name', 'actions'] : 
+          ['created', 'phone', 'device', 'status', 'email', 'name', 'actions'];
     });
   }
 
@@ -57,13 +57,19 @@ export class HomeComponent implements OnInit {
       const currentUser = getAuth();
       onAuthStateChanged(currentUser, async (user) => {
         if (user) {
-          this.isLoadingIcon = true;
+          this.isLoadingIcon = false;
           console.log('query to data service', user)
           console.log(user.phoneNumber)
           const phone = user.phoneNumber
           this.dataService.requirePermissions(phone!)
             .subscribe((result: Admin[]) => {     
               this.guardService.isLoggedIn = true;
+              this.dataService.getUsers()
+              .subscribe(data => {
+              this.users = data;
+              this.dataSource = new MatTableDataSource<Client>(this.users);
+              console.log('datasourse loaded', this.users)
+              })
             }, error => {
               console.log('Error, вы не админ!')
               this.guardService.isLoggedIn = false;
@@ -75,6 +81,9 @@ export class HomeComponent implements OnInit {
                 if(error.status == '404'){
                   console.log("Не найден пользователь")
                   this.alertMessage = "Вас ещё не зарегистрировали в нашей базе данных, либо Вы ещё не подавали заявки на ремонт"
+                }
+                else {
+                  console.log(error)
                 }
               })
             })
@@ -109,8 +118,16 @@ export class HomeComponent implements OnInit {
     
   }
 
+  goNext(){
+    this.router.navigateByUrl('table');
+  }
+
   logout(){
-    this.dialog.open(LogoutComponent);
+    const dialogRef = this.dialog.open(LogoutComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      
+    });
   }
 
   enter(){

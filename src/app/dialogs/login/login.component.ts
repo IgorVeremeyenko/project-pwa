@@ -90,7 +90,7 @@ export class LoginComponent implements OnInit {
         })
         .then(() => {          
           this.isLoading = true;
-          setTimeout(() => {this.dialogRef.close(); this.router.navigateByUrl('/')}, 3000);
+          setTimeout(() => {this.dialogRef.close(); this.router.navigateByUrl('')}, 3000);
           this.isLoading = false;
         })
         .catch(err => console.log(err))
