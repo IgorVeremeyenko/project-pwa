@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from './dialogs/login/login.component';
 import { initializeApp } from 'firebase/app';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
+import { LogoutComponent } from './dialogs/logout/logout.component';
 export interface Element {
   name: string;
   position: number;
@@ -20,7 +22,7 @@ export class AppComponent implements OnInit {
   title = 'project-pwa';
   
   constructor(
-    
+    private readonly router: Router,
     public dialog: MatDialog
 
   ) { }  
@@ -30,7 +32,17 @@ export class AppComponent implements OnInit {
     
   }
 
-  
+  goLogin(){
+    this.router.navigateByUrl('authorization');
+  }
+
+  logout(){
+    const dialogRef = this.dialog.open(LogoutComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      
+    });
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(LoginComponent, {

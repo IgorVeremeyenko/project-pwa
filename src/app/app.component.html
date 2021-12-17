@@ -1,2 +1,15 @@
-
+<mat-toolbar>
+    <span>My Application</span>
+    <span class="example-spacer"></span>
+    <button (click)="goLogin()" 
+    mat-icon-button 
+    class="example-icon" 
+    aria-label="Example icon-button with menu icon">
+      <mat-icon>login</mat-icon>
+    </button>
+    <button (click)="logout()" mat-icon-button class="material-icons md-light md-inactive">
+      <mat-icon>logout</mat-icon>
+    </button>
+    
+  </mat-toolbar>
 <router-outlet></router-outlet>
