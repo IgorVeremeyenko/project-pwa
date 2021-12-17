@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,6 +16,12 @@ import { LoginComponent } from './dialogs/login/login.component';
 import { LogoutComponent } from './dialogs/logout/logout.component';
 import { LottieModule } from 'ngx-lottie';
 import player from 'lottie-web';
+import { registerLocaleData } from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
+import { DetailsComponent } from './components/details/details.component';
+import { ListComponent } from './components/list/list.component';
+
+registerLocaleData(localeRu, 'ru');
 
 export function playerFactory() {
   return player;
@@ -26,7 +32,9 @@ export function playerFactory() {
     AuthComponent,
     HomeComponent,
     LoginComponent,
-    LogoutComponent
+    LogoutComponent,
+    DetailsComponent,
+    ListComponent
   ],
   imports: [
     TextMaskModule,
@@ -48,7 +56,8 @@ export function playerFactory() {
       provide: HTTP_INTERCEPTORS,
       useClass: CorsInterceptor,
       multi: true,
-    }
+    },
+    { provide: LOCALE_ID, useValue: 'ru' }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

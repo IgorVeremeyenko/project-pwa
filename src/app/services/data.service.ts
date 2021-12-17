@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { map, tap } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Admin } from '../interfaces/admin';
 import { Client } from '../interfaces/client';
 import { Device } from '../interfaces/device';
@@ -9,15 +12,17 @@ import { Device } from '../interfaces/device';
   providedIn: 'root'
 })
 export class DataService {
-  private url = "https://localhost:7214/api/ClientsDevices/"
-  private urlTokenVerify = "https://localhost:7214/api/Auth/"
-  private urlPost = "https://localhost:7214/api/ClientsDevices/"
-  private urlCheckUser = "https://localhost:7214/api/Clients/phone?phoneNumber="
-  private urlChangeStatus = "https://localhost:7214/api/Devices/"
-  private urlRequirePermissions = "https://localhost:7214/api/Admins/"
+  public url = "https://localhost:7214/api/ClientsDevices/"
+  public urlTokenVerify = "https://localhost:7214/api/Auth/"
+  public urlPost = "https://localhost:7214/api/ClientsDevices/"
+  public urlCheckUser = "https://localhost:7214/api/Clients/phone?phoneNumber="
+  public urlChangeStatus = "https://localhost:7214/api/Devices/"
+  public urlRequirePermissions = "https://localhost:7214/api/Admins/"  
   message: boolean = false;
   token!: string;
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {
+    
+   }
 
   checkToken(token: string){
     const data = {
@@ -39,6 +44,21 @@ export class DataService {
 
   getDevicesByUser(phone: string){
     return this._http.get<Device[]>(this.urlPost + phone);
+  }
+
+  checkAuth(): boolean{
+    const app = initializeApp(environment.firebaseConfig);
+    if(app != null){
+      const currentUser = getAuth();
+      onAuthStateChanged(currentUser, (user) => {
+        if(user) {
+          console.log('is logged')
+          return true;
+        }
+        return false;
+      })
+    }
+    return false;
   }
 
 }
