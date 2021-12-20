@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -11,12 +11,14 @@ import {
   FacebookAuthProvider, 
   getAuth, 
   GoogleAuthProvider, 
+  linkWithPhoneNumber, 
   RecaptchaVerifier, 
   setPersistence, 
   signInWithPhoneNumber, 
   signInWithPopup 
 } from 'firebase/auth';
 import { AuthComponent } from 'src/app/auth/auth.component';
+import { LoginByPhoneComponent } from '../login-by-phone/login-by-phone.component';
 
 @Component({
   selector: 'app-login',
@@ -48,7 +50,8 @@ export class LoginComponent implements OnInit {
     public dialogRef: MatDialogRef<LoginComponent>,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private readonly router: Router
+    private readonly router: Router,    
+    private readonly dialog: MatDialog
     ) {
     this.matIconRegistry.addSvgIcon('google', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'google.svg'))
     this.matIconRegistry.addSvgIcon('facebook', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'facebook.svg'))
@@ -100,7 +103,10 @@ export class LoginComponent implements OnInit {
   confirmation(result: ConfirmationResult) {
     console.log(result)
     result.confirm(this.otp_number)
-      .then(r => console.log(r.user.displayName))
+      .then(r => {
+        console.log(r.user.displayName);
+        this.router.navigateByUrl('');
+      })
       .catch(err => console.log(err))
   }
   async SignIn(phoneNumber: string) {
@@ -122,6 +128,7 @@ export class LoginComponent implements OnInit {
             // Handle Errors here.
             const errorCode = error.code;
             const errorMessage = error.message;
+            this.message = errorMessage;
           })
       
 
@@ -139,6 +146,11 @@ export class LoginComponent implements OnInit {
         // The signed-in user info.
         const user = result.user;
         console.log(user)
+        if(!user.phoneNumber){
+          this.dialog.open(LoginByPhoneComponent, {disableClose: true, data: this.auth.currentUser})
+        }
+       
+        this.router.navigateByUrl('');
         // ...
       }).catch((error) => {
         // Handle Errors here.
@@ -148,6 +160,7 @@ export class LoginComponent implements OnInit {
         const email = error.email;
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
+        this.message = errorMessage;
         // ...
       });
   }

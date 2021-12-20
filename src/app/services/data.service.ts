@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { Auth, getAuth, onAuthStateChanged } from 'firebase/auth';
 import { map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Admin } from '../interfaces/admin';
@@ -46,19 +46,18 @@ export class DataService {
     return this._http.get<Device[]>(this.urlPost + phone);
   }
 
-  checkAuth(): boolean{
-    const app = initializeApp(environment.firebaseConfig);
-    if(app != null){
-      const currentUser = getAuth();
-      onAuthStateChanged(currentUser, (user) => {
-        if(user) {
-          console.log('is logged')
-          return true;
-        }
-        return false;
-      })
-    }
-    return false;
+  setStatusTrue(id: number, item: Device){
+    return this._http.put<Device>(this.urlChangeStatus + id, item);
   }
+
+  checkAuth(): Auth | null{
+    const app = initializeApp(environment.firebaseConfig)
+    if(app){
+      const currentUser = getAuth();
+      return currentUser;
+    }
+    return null;
+  }
+  
 
 }

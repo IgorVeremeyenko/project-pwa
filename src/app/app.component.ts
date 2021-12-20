@@ -1,46 +1,91 @@
-import { Component,  OnInit  } from '@angular/core';
-import { GoogleAuthProvider, getAuth, signInWithPopup  } from "firebase/auth";
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { GoogleAuthProvider, getAuth, signInWithPopup, unlink } from "firebase/auth";
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from './dialogs/login/login.component';
 import { initializeApp } from 'firebase/app';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { LogoutComponent } from './dialogs/logout/logout.component';
-export interface Element {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
+import { GuardService } from './services/guard.service';
+import { DataService } from './services/data.service';
+import { AnimationOptions } from 'ngx-lottie';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   title = 'project-pwa';
-  
+  private pathSvg: string = "./assets/svg/";
+  path!: any;
+  isLogged: boolean = false;
+  isLoadingIcon: boolean = true;
+  options: AnimationOptions = {
+    path: './assets/svg/87164-loading-animation.json'    
+  }
   constructor(
     private readonly router: Router,
-    public dialog: MatDialog
-
-  ) { }  
-
-  ngOnInit(): void {
-    const app = initializeApp(environment.firebaseConfig);
+    public dialog: MatDialog,
+    private readonly authService: DataService,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
+  ) {
+    
+    this.matIconRegistry.addSvgIcon('arrow-animated', this.domSanitizer.bypassSecurityTrustResourceUrl(this.pathSvg + 'loader-dark.svg'));
+    this.matIconRegistry.addSvgIcon('logo', this.domSanitizer.bypassSecurityTrustResourceUrl(this.pathSvg + 'logo-image-white.svg'))
+  }
+  ngAfterViewInit(): void {
     
   }
 
-  goLogin(){
+  home() {
+    this.router.navigateByUrl('unauthorized');
+  }
+  list() {
+    this.router.navigateByUrl('')
+  }
+  Unlink() {
+    const app = initializeApp(environment.firebaseConfig);
+    const auth = getAuth();
+    let provId: any;
+    const providerId = auth.currentUser?.providerData
+    providerId?.forEach((data) => {
+      if(data.providerId != 'phone'){
+        provId = data.providerId
+      }
+
+    })
+    unlink(auth.currentUser!, provId).then(() => {
+      this.router.navigateByUrl('devices');
+    }).catch((error) => {
+      console.log(error)
+    });
+  }
+
+  ngOnInit(): void {
+    const app = initializeApp(environment.firebaseConfig);   
+    // this.isLoadingIcon = true;   
+    const user = this.authService.checkAuth();
+    if(user != null){
+      // this.isLogged = true;
+      this.isLoadingIcon = false;
+      console.log(this.isLogged)
+    }
+    this.isLogged = false;
+  }
+  
+  goLogin() {
     this.router.navigateByUrl('authorization');
   }
 
-  logout(){
+  logout() {
     const dialogRef = this.dialog.open(LogoutComponent);
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      
+      this.router.navigateByUrl('authorization');
     });
   }
 
@@ -50,7 +95,6 @@ export class AppComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
     });
   }
 
@@ -65,7 +109,6 @@ export class AppComponent implements OnInit {
         const token = credential!.accessToken;
         // The signed-in user info.
         const user = result.user;
-        console.log(token)
         // ...
       }).catch((error) => {
         // Handle Errors here.

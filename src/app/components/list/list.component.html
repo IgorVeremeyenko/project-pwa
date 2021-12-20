@@ -1,22 +1,100 @@
-<div class="example-container mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource">
-      <!-- Item Column -->
-      <ng-container matColumnDef="item">
-        <th mat-header-cell *matHeaderCellDef> Item </th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction}} </td>
-        <td mat-footer-cell *matFooterCellDef> Total </td>
-      </ng-container>
+<div class="main-container">
+    <span class="lottie" *ngIf="isLoadingIcon; else elseBlock">
+      <ng-lottie [options]="options" width="200px" height="300px"></ng-lottie>
+    </span>
+    <span *ngIf="alertMessage != ''" style="text-align: center;">
+      <h2>{{alertMessage}}</h2>
+    </span>
+    <mat-drawer-container class="drawer-container" autosize>
+      <mat-drawer #drawer class="example-sidenav" mode="side" position="end">
+        <p>Auto-resizing sidenav</p>
+        <p>Lorem, ipsum dolor sit amet consectetur.</p>
+        <button  mat-raised-button>
+          Toggle extra text
+        </button>
+      </mat-drawer>
+    
+      <div class="example-sidenav-content">
+        
+      </div>
+    
+    </mat-drawer-container>
+    <ng-template #elseBlock>
+
+      <div id="div-table" class="example-container" mat-elevation-z8>
+        <mat-table #table [dataSource]="dataSource">
+      
+          <ng-container matColumnDef="created" >
+            <mat-header-cell *matHeaderCellDef> Дата регистрации </mat-header-cell>
+            <mat-cell *matCellDef="let element" id="date">
+              
+              <span class="mobile-label">Дата регистрации: </span>
+            <mat-icon class="calendar">
+                event_note
+                </mat-icon>  {{element.device.dateToAdd | date: 'd MMMM y, h:mm'}}
+            </mat-cell>
+          </ng-container>
+      
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Имя клиента </mat-header-cell>
+            <mat-cell *matCellDef="let element" id="name">
+              <span class="mobile-label">Имя клиента:</span>
+              <div>
+      
+                {{element.client.name}}
+              </div>
+            </mat-cell>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="device">
+            <mat-header-cell *matHeaderCellDef id="device-header"> Название устройства </mat-header-cell>
+            <mat-cell *matCellDef="let element" [matTooltip]="element.device.deviceName" matTooltipPosition="after">
+              <span class="mobile-label">Наименование устройства:</span>
+              {{element.device.deviceName}}
+            </mat-cell>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef> Состояние ремонта </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span class="mobile-label">Состояние ремонта:</span>
+              <mat-icon *ngIf="!element.device.status" color="warn">warning</mat-icon>
+              <mat-icon *ngIf="element.device.status" color="accent">task_alt</mat-icon>
+               {{element.device.status | readyNo: element.device.dateToAdd}}
+            </mat-cell>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef> Почта </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span class="mobile-label">Почта:</span>
+              {{element.client.email}}
+            </mat-cell>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="phone" >
+            <div class="flat">
+              <mat-header-cell *matHeaderCellDef id="phone-header"> Номер телефона </mat-header-cell>
+              <mat-cell *matCellDef="let element" id="phone" >
+                <span class="mobile-label">Номер телефона:</span>
+                
+                <mat-icon class="phone-icon">phone_in_talk</mat-icon> {{element.client.phoneNumber}}
+                <p class="mobile-label-element"> </p>
+              </mat-cell>
+            </div>
+          </ng-container>
+      
+          <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+          <mat-row matRipple  (click)="getRecord(row)" 
+            *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+    </ng-template>
+    
   
-      <!-- Cost Column -->
-      <ng-container matColumnDef="cost">
-        <th mat-header-cell *matHeaderCellDef> Cost </th>
-        <td mat-cell *matCellDef="let transaction">  </td>
-        <td mat-footer-cell *matFooterCellDef>  </td>
-      </ng-container>
-  
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
-    </table>
-  </div>
-  
+</div>
+

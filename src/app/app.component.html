@@ -1,15 +1,29 @@
-<mat-toolbar>
-    <span>My Application</span>
-    <span class="example-spacer"></span>
-    <button (click)="goLogin()" 
-    mat-icon-button 
-    class="example-icon" 
-    aria-label="Example icon-button with menu icon">
-      <mat-icon>login</mat-icon>
-    </button>
-    <button (click)="logout()" mat-icon-button class="material-icons md-light md-inactive">
-      <mat-icon>logout</mat-icon>
+<mat-toolbar >
+  <section class="logo">
+    <mat-icon class="icons" style="height: 60px;width: 60px;padding-right: 0.5em;" svgIcon="logo"></mat-icon>
+    <span>GOPR-SERVICE</span>
+  </section>
+  <span class="lottie" *ngIf="isLoadingIcon">
+    <mat-icon class="icons" svgIcon="arrow-animated"></mat-icon>
+  </span>
+  <button mat-button (click)="home()">Home</button>
+  <button mat-button (click)="list()">List</button>
+  <button mat-flat-button (click)="Unlink()">Unlink</button>
+  <span class="spacer"></span>
+  <section class="buttons">
+    <button mat-icon-button >
+      <mat-icon matBadge="4" matBadgeOverlap="false" matBadgeColor="warn">notifications</mat-icon>
     </button>
     
-  </mat-toolbar>
-<router-outlet></router-outlet>
+    <button *ngIf="isLogged" (click)="singIn()" matTooltip="Войти" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+      <mat-icon mat-button>login</mat-icon>
+    </button>
+    <button *ngIf="!isLogged" (click)="logout()" matTooltip="Выйти" mat-icon-button class="material-icons md-light md-inactive">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </section>
+</mat-toolbar>
+
+
+  <router-outlet></router-outlet>
+<!-- <app-footer></app-footer> -->

@@ -1,7 +1,4 @@
-<h1 *ngIf="!OTP_Window" mat-dialog-title>Авторизуйтесь любым из способов</h1>
-<div mat-dialog-content>
-
-  <form class="login-form" [formGroup]="form" (ngSubmit)="submit($event)">
+<form class="login-form" [formGroup]="form" (ngSubmit)="submit($event)">
     <div *ngIf="!OTP_Window" class="signin-btn">
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Номер телефона</mat-label>
@@ -36,23 +33,3 @@
       </ng-template>
     </div>
   </form>
-  <mat-divider></mat-divider>
-  <section *ngIf="!OTP_Window">
-    <div style="display: flex; align-items: center; justify-content:center;">
-      <h3 style="font-family: montserrat">Социальные сети</h3>
-    </div>
-    <mat-divider></mat-divider>
-    <div style="display: flex; align-items: center; justify-content:center;">
-
-      <button mat-button style="padding: 1rem;" (click)="signInGoogle()">
-        <mat-icon style="width: 50px; height:30px" svgIcon="google"></mat-icon> Войти с помощью Google
-      </button>
-    </div>
-    <div style="display: flex; align-items: center; justify-content:center;">
-
-      <button mat-button style="padding: 1rem;">
-        <mat-icon style="width: 50px; height:30px" svgIcon="facebook"></mat-icon> Войти с помощью Facebook
-      </button>
-    </div>
-  </section>
-</div>

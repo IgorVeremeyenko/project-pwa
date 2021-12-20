@@ -5,8 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ReadyNoPipe implements PipeTransform {
 
-  transform(value: unknown, ...args: unknown[]): unknown {
-    return value ? "Готово" : "Не готово ещё";
+  transform(value: unknown, date: unknown): unknown {
+    return value ? "Выполнено": "Не готово ещё";
   }
 
 }

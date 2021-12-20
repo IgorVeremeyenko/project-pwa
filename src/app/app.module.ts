@@ -9,7 +9,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CorsInterceptor } from './interceptors/cors.interceptor';
-import { HomeComponent } from './components/home/home.component';
 import { AuthComponent } from './auth/auth.component';
 import { TextMaskModule } from 'angular2-text-mask';
 import { LoginComponent } from './dialogs/login/login.component';
@@ -21,6 +20,12 @@ import localeRu from '@angular/common/locales/ru';
 import { DetailsComponent } from './dialogs/details/details.component';
 import { ListComponent } from './components/list/list.component';
 import { ReadyNoPipe } from './ready-no.pipe';
+import { FooterComponent } from './components/footer/footer.component';
+import { SureComponent } from './dialogs/sure/sure.component';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { HomeComponent } from './components/home/home.component';
+import { AuthModule } from './auth/auth.module';
+import { LoginByPhoneComponent } from './dialogs/login-by-phone/login-by-phone.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -30,13 +35,17 @@ export function playerFactory() {
 @NgModule({
   declarations: [
     AppComponent,
-    AuthComponent,
     HomeComponent,
+    AuthComponent,    
     LoginComponent,
     LogoutComponent,
     DetailsComponent,
     ListComponent,
-    ReadyNoPipe
+    ReadyNoPipe,
+    FooterComponent,
+    SureComponent,
+    UnauthorizedComponent,
+    LoginByPhoneComponent
   ],
   imports: [
     TextMaskModule,
@@ -51,7 +60,8 @@ export function playerFactory() {
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerImmediately'
     }),
-    LottieModule.forRoot({ player: playerFactory })
+    LottieModule.forRoot({ player: playerFactory }),
+    AuthModule
   ],
   providers: [
     {
