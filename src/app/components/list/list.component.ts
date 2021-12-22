@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Injectable, OnInit, ViewChild } from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorIntl, _MatPaginatorBase } from '@angular/material/paginator';
@@ -20,21 +20,19 @@ import { AddToDetailsService } from 'src/app/services/add-to-details.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DetailsComponent } from 'src/app/dialogs/details/details.component';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 class CustomPaginator extends MatPaginatorIntl {
 
   override itemsPerPageLabel = 'Показано результатов на странице';
   override nextPageLabel = 'Следующая страница'
   override previousPageLabel = 'Предыдущая страница'
-
+  override getRangeLabel = (page: number, pageSize: number, length: number) => {
+    return ((page * pageSize) + 1) + ' - ' + ((page * pageSize) + pageSize) + ' из ' + length;
+}
   constructor() {
     super();
   }
-}
-
-export interface Transaction {
-  item: string;
-  cost: number;
 }
 
 @Component({
@@ -62,12 +60,15 @@ export class ListComponent implements OnInit {
   options: AnimationOptions = {
     path: './assets/svg/87164-loading-animation.json'    
   }
+  promiseLoadingRun = new BehaviorSubject<boolean>(true);
 
+  loading = this.promiseLoadingRun.asObservable();
+  filter!: Client;
   parsed: any;
   name: any;
   length: number = 0;
   isShowing: boolean = false;
-  loading: boolean = false;
+  // loading$: boolean = false;
   noData: boolean = false;
   clicked: boolean = false;
   sortedData!: Client[];
@@ -102,9 +103,8 @@ export class ListComponent implements OnInit {
     this.matIconRegistry.addSvgIcon('arrow', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'circle arrow.svg'))
     this.matIconRegistry.addSvgIcon('arrow-animated', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'loader-dark.svg'))
   }
-
-  ngOnInit() {    
-    
+ngOnInit() {    
+    console.log('spinner is ', this.loading)
     const app = initializeApp(environment.firebaseConfig);
     if (app != null) {     
       console.log('app')
@@ -125,7 +125,8 @@ export class ListComponent implements OnInit {
             .then((result) => {
               this.dataService.checkToken(result)
                 .subscribe(() => {
-                  this.dataService.message = true;                  
+                  this.dataService.message = true;    
+                  console.log('spinner is ', this.loading)              
                   // this.isLogged = this.data.message;
                   setInterval(() => {
                     this.isLoadingIcon = false
@@ -137,8 +138,9 @@ export class ListComponent implements OnInit {
         } else {
           console.log('User is signed out');
           this.dataService.message = false;
-          
           // this.isLogged = this.data.message;
+          // this.loading$ = false;
+          this.promiseLoadingRun.next(false);
           setInterval(() => {
             this.isLoadingIcon = false;
             // this.router.navigateByUrl('unauthorized');
@@ -153,6 +155,7 @@ export class ListComponent implements OnInit {
       console.log('app is null')
     }
     //this.getUsers();
+    
   }
 
   requirePermissions(phone: string, user: any){
@@ -164,6 +167,7 @@ export class ListComponent implements OnInit {
       this.clients = data;
       this.dataSource = new MatTableDataSource<Client>(this.clients);
       console.log('datasourse loaded', this.dataSource.data)
+      this.promiseLoadingRun.next(false);
       this.update(true, phone);
       })
     }, error => {
@@ -172,14 +176,17 @@ export class ListComponent implements OnInit {
       .subscribe((data: Device[]) => {
         console.log('loaded devices', data);
         this.devices = data;
+        this.promiseLoadingRun.next(false);
         this.dataSource = new MatTableDataSource<Device>(this.devices);
         this.update(false, phone);
       }, error => {
+        this.promiseLoadingRun.next(false);
         if(error.status == '404'){
           console.log("Не найден пользователь")
           this.alertMessage = "Вас ещё не зарегистрировали в нашей базе данных, либо Вы ещё не подавали заявки на ремонт"
         }
         else {
+          console.log('spinner is ', this.loading)
           console.log(error)
         }
       })
@@ -222,7 +229,8 @@ export class ListComponent implements OnInit {
 
   update(admin: boolean, phone: string) {
     this.clicked = true;
-    this.loading = true;
+    // this.loading$ = true;
+    this.promiseLoadingRun.next(true);
     this.isShowing = false;
     this.noData = false;
     this.dataSource = new MatTableDataSource(this.sortedData);
@@ -232,9 +240,11 @@ export class ListComponent implements OnInit {
       .subscribe(
         (data: Client[]) => {
           console.log(data)
+          this.promiseLoadingRun.next(false);
           this.clients = data;
           this.length = data.length
-          this.loading = false;
+          // this.loading$ = false;
+          this.promiseLoadingRun.next(false);
           this.isShowing = true;
           this.clicked = false;
           this.sortedData = this.clients.slice();
@@ -243,7 +253,8 @@ export class ListComponent implements OnInit {
         }, (error) => {
           console.log(error)
           this.isShowing = false;
-          this.loading = false;
+          // this.loading$ = false;
+          this.promiseLoadingRun.next(false);
           this.noData = true;
           this.clicked = false;
           this._snackBar.open('Что-то не так с соединением, попробуйте пожалуйста позже', 'Ок', {
@@ -254,13 +265,18 @@ export class ListComponent implements OnInit {
     else{
       return this.dataService.getDevicesByUser(phone)
       .subscribe((data: Device[]) => {
+        this.promiseLoadingRun.next(false);
         console.log('loaded devices', data);
         this.devices = data;
+        // this.loading$ = false;
+        this.promiseLoadingRun.next(false);
         this.dataSource = new MatTableDataSource<Device>(this.devices);
       }, error => {
         console.log(error)
           this.isShowing = false;
-          this.loading = false;
+          this.promiseLoadingRun.next(false);
+          // this.loading$ = false;
+          this.promiseLoadingRun.next(false);
           this.noData = true;
           this.clicked = false;
           this._snackBar.open('Что-то не так с соединением, попробуйте пожалуйста позже', 'Ок', {
@@ -287,7 +303,24 @@ export class ListComponent implements OnInit {
   //   console.log(data)   
   // }
 
+  applyFilter(event: Event) {
+        
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filterPredicate = (data: Client, filter: string) => {
+      return data.client.name.toLocaleLowerCase().includes(filter) ||
+      data.client.email.toLocaleLowerCase().includes(filter) ||
+      data.client.phoneNumber.toLocaleLowerCase().includes(filter) ||
+      data.device.deviceName.toLocaleLowerCase().includes(filter);
+
+    };
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    
+  }
+
+
   sortData(sort: Sort) {
+    // this.loading$ = true;
+    this.promiseLoadingRun.next(false);
     console.log(this.clients)
     const data = this.clients.slice();
     if (!sort.active || sort.direction === '') {
@@ -297,6 +330,7 @@ export class ListComponent implements OnInit {
 
     data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
+      console.log(sort.direction)
       switch (sort.active) {
         case 'name':
           return this.compare(a.name, b.name, isAsc);
@@ -313,6 +347,8 @@ export class ListComponent implements OnInit {
     this.sortedData = data;
     this.dataSource = new MatTableDataSource(this.sortedData);
     this.dataSource.paginator = this.paginator;
+    // this.loading$ = false;
+    this.promiseLoadingRun.next(false);
   }
   compare(a: number | string, b: number | string, isAsc: boolean) {
 

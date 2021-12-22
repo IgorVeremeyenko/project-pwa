@@ -11,15 +11,50 @@ import { DataService } from './services/data.service';
 import { AnimationOptions } from 'ngx-lottie';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+    trigger('openClose', [
+      // ...
+      // state('open', style({
+      //   height: '60px',
+      //   width: '60px',
+      //   paddingRight: '0.5em'
+      // })),
+      // state('closed', style({
+      //   height: '160px',
+      //   width: '160px',
+      //   paddingRight: '0.5em'
+      // })),
+      // transition('open => closed', [
+      //   animate('0.5s')
+      // ]),
+      // transition('closed => open', [
+      //   animate('0.5s')
+      // ]),
+      state('closed', style({ transform: 'rotate(0)' })),
+      state('open', style({ transform: 'rotate(-360deg)' })),
+      transition('open => closed', [
+          animate('1s')
+        ]),
+        transition('closed => open', [
+          animate('1s')
+        ]),   
+    ]),
+  ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'project-pwa';
+  isOpen = true;
+
+  toggle() {
+    this.isOpen = !this.isOpen;
+  }
   private pathSvg: string = "./assets/svg/";
   path!: any;
   isLogged: boolean = false;

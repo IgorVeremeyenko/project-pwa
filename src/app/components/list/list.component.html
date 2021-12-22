@@ -4,29 +4,26 @@
     </span>
     <span *ngIf="alertMessage != ''" style="text-align: center;">
       <h2>{{alertMessage}}</h2>
-    </span>
-    <mat-drawer-container class="drawer-container" autosize>
-      <mat-drawer #drawer class="example-sidenav" mode="side" position="end">
-        <p>Auto-resizing sidenav</p>
-        <p>Lorem, ipsum dolor sit amet consectetur.</p>
-        <button  mat-raised-button>
-          Toggle extra text
-        </button>
-      </mat-drawer>
-    
-      <div class="example-sidenav-content">
-        
-      </div>
-    
-    </mat-drawer-container>
+    </span> 
+  
     <ng-template #elseBlock>
 
       <div id="div-table" class="example-container" mat-elevation-z8>
-        <mat-table #table [dataSource]="dataSource">
-      
+        <mat-form-field appearance="standard">
+          <mat-label>Поиск</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Напр. микроволновая печь" #input>
+        </mat-form-field>
+         
+         <div class="spinner-container" *ngIf="loading | async">
+           <mat-spinner></mat-spinner>
+          </div>
+        <mat-table #table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
+          
+          
           <ng-container matColumnDef="created" >
-            <mat-header-cell *matHeaderCellDef> Дата регистрации </mat-header-cell>
-            <mat-cell *matCellDef="let element" id="date">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Дата регистрации </mat-header-cell>
+            
+            <mat-cell *matCellDef="let element" id="date" matTooltip="{{element.device.dateToAdd | date: 'd MMMM y, h:mm'}}">
               
               <span class="mobile-label">Дата регистрации: </span>
             <mat-icon class="calendar">
@@ -48,7 +45,7 @@
       
       
           <ng-container matColumnDef="device">
-            <mat-header-cell *matHeaderCellDef id="device-header"> Название устройства </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef id="device-header" mat-sort-header> Название устройства </mat-header-cell>
             <mat-cell *matCellDef="let element" [matTooltip]="element.device.deviceName" matTooltipPosition="after">
               <span class="mobile-label">Наименование устройства:</span>
               {{element.device.deviceName}}
@@ -57,7 +54,7 @@
       
       
           <ng-container matColumnDef="status">
-            <mat-header-cell *matHeaderCellDef> Состояние ремонта </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Состояние ремонта </mat-header-cell>
             <mat-cell *matCellDef="let element">
               <span class="mobile-label">Состояние ремонта:</span>
               <mat-icon *ngIf="!element.device.status" color="warn">warning</mat-icon>
@@ -79,6 +76,7 @@
           <ng-container matColumnDef="phone" >
             <div class="flat">
               <mat-header-cell *matHeaderCellDef id="phone-header"> Номер телефона </mat-header-cell>
+              
               <mat-cell *matCellDef="let element" id="phone" >
                 <span class="mobile-label">Номер телефона:</span>
                 
@@ -90,8 +88,12 @@
       
           <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
           <mat-row matRipple  (click)="getRecord(row)" 
-            *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            *matRowDef="let row; columns: displayedColumns;">
+            
+          </mat-row>            
         </mat-table>
+      
+        <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator> -->
       </div>
     </ng-template>
     
