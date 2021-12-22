@@ -13,7 +13,7 @@
         event_note
       </mat-icon>Зарегистрировано:
     </small></mat-label>
-  {{data.device.dateToAdd | date: 'd.MM.yyyy, h:mm'}}
+  {{data.device.dateToAdd | date: 'd.MM.yyyy, hh:mm'}}
   <mat-label class="person">
     <small>Персона:</small>
   </mat-label>
@@ -51,6 +51,6 @@
     *ngIf="!isLoading"
     color="warn" 
     (click)="fetch()"    
-    >{{!data.device.status ? 'Сообщить о готовнисти' : data.device.dateToReturn | date: 'd.MM.yyyy, h:mm'}}</button>
+    >{{!data.device.status ? 'Сообщить о готовнисти' : data.device.dateToReturn | date: 'd.MM.yyyy, HH:mm'}}</button>
   </div>
 </mat-dialog-footer>

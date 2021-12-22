@@ -8,7 +8,15 @@
   </span>
   <button mat-button (click)="home()">Home</button>
   <button mat-button (click)="list()">List</button>
-  <button mat-flat-button (click)="Unlink()">Unlink</button>
+  <span matRipple style="cursor: pointer; border-radius: 32px;" matTooltip="Добавить клиента" (click)="addUser()">
+    <lord-icon
+    trigger="hover"
+    colors="primary:#000000,secondary:#000000"
+    src="../assets/svg/add-user.json"
+    style="height: 50px; width: 50px;"
+  ></lord-icon>  
+  </span>
+  <button mat-flat-button disabled (click)="Unlink()">Unlink</button>
   <span class="spacer"></span>
   <nav>
     <button mat-button (click)="toggle()">Toggle Open/Close</button>

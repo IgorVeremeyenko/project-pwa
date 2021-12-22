@@ -4,6 +4,7 @@ import { initializeApp } from 'firebase/app';
 import { Auth, getAuth, onAuthStateChanged } from 'firebase/auth';
 import { map, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ClientsDevice } from '../components/add-client/add-client.component';
 import { Admin } from '../interfaces/admin';
 import { Client } from '../interfaces/client';
 import { Device } from '../interfaces/device';
@@ -57,6 +58,11 @@ export class DataService {
       return currentUser;
     }
     return null;
+  }
+
+  addUser(newClient: ClientsDevice){
+    console.log(newClient)
+    return this._http.post<Client[]>(this.urlPost, newClient);
   }
   
 

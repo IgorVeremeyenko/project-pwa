@@ -1,0 +1,118 @@
+<ng-container [ngSwitch]="stepperOrientation | async">
+</ng-container>
+<mat-progress-bar *ngIf="progressBar" color="warn" mode="query"></mat-progress-bar>
+<mat-stepper
+  [linear]="true"
+  class="example-stepper"
+  [orientation]="(stepperOrientation | async)!">
+  <mat-step class="mat-step-header" [completed]="isChecked" errorMessage="Это поле обязательное*">
+    <form [formGroup]="phoneFormGroup" >
+      <ng-template matStepLabel>Укажите номер телефона</ng-template>
+      <mat-form-field  appearance="fill">
+        <mat-label>055 555 55 55</mat-label>
+        <span matPrefix>+38 &nbsp;</span> 
+        <input 
+          matInput 
+          [textMask]="{mask: phoneMask}" 
+          placeholder="Номер клиента" 
+          formControlName="number" 
+          type="tel"
+          name="phone"
+          (ngModelChange)="onNumberChange($event)"
+          required
+        >
+      </mat-form-field>
+      
+      <span *ngIf="isChecked && f.valid">
+        <lord-icon
+        trigger="hover"
+        colors="primary:#078905,secondary:#000000"
+        src="../assets/svg/checked.json"
+        style="height: 50px; width: 50px;"
+        ></lord-icon> 
+      </span>          
+      <span *ngIf="isLoadingIcon">
+        <lord-icon
+          trigger="loop"
+          colors="primary:#000000,secondary:#000000"
+          src="../assets/svg/87164-loading-animation.json"
+          style="height: 50px; width: 50px;"
+        ></lord-icon> 
+      </span>
+      <span *ngIf="isFailedToLoad && f.valid">
+        <lord-icon
+          trigger="loop"
+          colors="primary:#f44336,secondary:#000000"
+          src="../assets/svg/failed.json"
+          style="height: 50px; width: 50px;"
+          [matTooltip]="messageToolTip"
+        ></lord-icon> 
+      </span>   
+      <span *ngIf="isNotConnectedToServer">
+        <lord-icon
+          trigger="loop"
+          colors="primary:#2bafc4,secondary:#2bafc4"
+          src="../assets/svg/connection.json"
+          style="height: 50px; width: 50px;"
+          [matTooltip]="messageToolTip"
+        ></lord-icon> 
+      </span>         
+      <div>
+        <p>Заполните эти поля и жмите "Далее"</p>
+        <button mat-button matStepperNext [disabled]="phoneFormGroup.invalid">Далее</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="deviceNameFormGroup" errorMessage="Это поля обязательное*">
+    <form [formGroup]="deviceNameFormGroup" (ngSubmit)="submitDeviceName()">
+      <ng-template matStepLabel>Название изделия</ng-template>
+      <mat-form-field appearance="fill">
+        <mat-label>Пылесос "марка"</mat-label>
+        <input matInput placeholder="Самсунг, не тянет" formControlName="deviceName"
+               required>
+      </mat-form-field>
+      <div>
+        <p>Заполните эти поля и жмите "Далее"</p>
+        <button mat-button matStepperPrevious>Назад</button>
+        <button mat-button matStepperNext >Далее</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step >
+    <form [formGroup]="clientNameFormGroup" (ngSubmit)="submitClientName()">
+      <ng-template matStepLabel>Имя клиента</ng-template>
+      <mat-form-field >
+        <input matInput placeholder="Не обязательно" formControlName="name">
+      </mat-form-field>
+      <div>
+        
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <form [formGroup]="statusFormGroup" >
+        <ng-template matStepLabel>Изделие уже готово?</ng-template>
+        <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group"
+          formControlName="status"
+          >
+          <mat-radio-button 
+          class="example-radio-button" 
+          *ngFor="let season of seasons" 
+          [value]="season"
+          checked            
+          >
+            {{season}}
+          </mat-radio-button>
+        </mat-radio-group>
+      <div>
+        <p>Если нажать "Да", отправится уведомление пользователю</p>
+        <button mat-button matStepperPrevious>Назад</button>
+        <button mat-button matStepperNext (click)="submitStatus()">Готово</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-stepper>

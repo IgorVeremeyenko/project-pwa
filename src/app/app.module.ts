@@ -26,6 +26,9 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
 import { HomeComponent } from './components/home/home.component';
 import { AuthModule } from './auth/auth.module';
 import { LoginByPhoneComponent } from './dialogs/login-by-phone/login-by-phone.component';
+import { AddClientComponent } from './components/add-client/add-client.component';
+import { defineLordIconElement } from 'lord-icon-element';
+import lottie from 'lottie-web';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -45,7 +48,8 @@ export function playerFactory() {
     FooterComponent,
     SureComponent,
     UnauthorizedComponent,
-    LoginByPhoneComponent
+    LoginByPhoneComponent,
+    AddClientComponent
   ],
   imports: [
     TextMaskModule,
@@ -54,6 +58,7 @@ export function playerFactory() {
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
+    LottieModule.forRoot({ player: playerFactory }),
     ServiceWorkerModule.register('../ngsw-worker.js', {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable
@@ -74,4 +79,9 @@ export function playerFactory() {
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    defineLordIconElement(lottie.loadAnimation);
+    registerLocaleData(localeRu, 'ru');
+  }
+ }

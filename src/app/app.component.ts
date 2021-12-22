@@ -83,6 +83,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   list() {
     this.router.navigateByUrl('')
   }
+  addUser(){
+    this.router.navigateByUrl('add-client');
+  }
   Unlink() {
     const app = initializeApp(environment.firebaseConfig);
     const auth = getAuth();

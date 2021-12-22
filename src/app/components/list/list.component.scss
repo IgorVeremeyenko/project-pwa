@@ -17,12 +17,14 @@
   
 }
 .spinner-container {
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
+  height: inherit;
+  width: inherit;
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
+  margin-top: 20rem;
+  z-index: 1;
 }
 .mat-progress-spinner{
   position: relative!important;
@@ -115,6 +117,10 @@
 }
 
 @media(max-width: 860px) {
+  .main-container {
+    display: flex;
+    justify-content: center;
+  }
   .mobile-label {
     width: 170px;
     display: inline-block;

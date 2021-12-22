@@ -1,10 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthComponent } from './auth/auth.component';
 import { GuardService } from './services/guard.service';
-import { ListComponent } from './components/list/list.component';
-import { DetailsComponent } from './dialogs/details/details.component';
-import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 
 const routes: Routes = [
   {
@@ -21,10 +17,15 @@ const routes: Routes = [
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   },
   {
+    path: 'add-client',
+    loadChildren: () => import('./components/add-client/add-client.module').then(m => m.AddClientModule)
+  },
+  {
     path: '',
     loadChildren: () => import('./components/list/list.module').then(m => m.ListModule),
     canLoad: [GuardService]
   }
+  
   
 ];
 

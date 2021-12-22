@@ -23,12 +23,12 @@
           <ng-container matColumnDef="created" >
             <mat-header-cell *matHeaderCellDef mat-sort-header> Дата регистрации </mat-header-cell>
             
-            <mat-cell *matCellDef="let element" id="date" matTooltip="{{element.device.dateToAdd | date: 'd MMMM y, h:mm'}}">
+            <mat-cell *matCellDef="let element" id="date" matTooltip="{{element.device.dateToAdd | date: 'd MMMM y, HH:mm'}}">
               
               <span class="mobile-label">Дата регистрации: </span>
             <mat-icon class="calendar">
                 event_note
-                </mat-icon>  {{element.device.dateToAdd | date: 'd MMMM y, h:mm'}}
+                </mat-icon>  {{element.device.dateToAdd | date: 'd MMMM y, HH:mm'}}
             </mat-cell>
           </ng-container>
       
