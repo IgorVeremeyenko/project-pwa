@@ -14,7 +14,7 @@ export class GuardService implements CanLoad {
   isLogged = false;
   constructor(private router: Router, private readonly dataService: DataService) { }
   canLoad(route: Route, segments: UrlSegment[]): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    
+        
     return this.dataService.checkAuth()!.onAuthStateChanged(user => {
       if(user){
         this.isLogged = true;
