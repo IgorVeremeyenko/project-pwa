@@ -1,7 +1,7 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { map, Observable } from 'rxjs';
+import { map, Observable, startWith } from 'rxjs';
 import { StepperOrientation } from '@angular/material/stepper';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ThemePalette } from '@angular/material/core';
@@ -57,7 +57,6 @@ export class AddClientComponent implements OnInit {
   options: AnimationOptions = {
     path: '../assets/svg/87164-loading-animation.json',
   };
-
   animationCreated(animationItem: AnimationItem): void {
     console.log(animationItem);
   }
@@ -74,7 +73,7 @@ export class AddClientComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('add user')
+
     this.phoneFormGroup = this._formBuilder.group({
       number: ['', [Validators.required, Validators.pattern(this.pattern)]]
     });
@@ -93,8 +92,10 @@ export class AddClientComponent implements OnInit {
     this.dateFormGroup = this._formBuilder.group({
       date: ['', Validators.required],
     });
-  }
 
+    
+  }
+  
 
   addClient() {
 
@@ -150,11 +151,14 @@ export class AddClientComponent implements OnInit {
       this.isChecked = true;
       this.isLoadingIcon = false; 
       this.isFailedToLoad = false; 
-      if(this.f.valid){        
+      if(this.f.valid){  
+       
         this.submitPhone(phoneNumber)
       }
     }
   }
+
+
 
   get f() {
     return this.phoneFormGroup.get('number')!;

@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DetailsComponent } from 'src/app/dialogs/details/details.component';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 class CustomPaginator extends MatPaginatorIntl {
 
@@ -41,7 +42,36 @@ class CustomPaginator extends MatPaginatorIntl {
   styleUrls: ['./list.component.scss'],
   providers: [
     { provide: MatPaginatorIntl, useClass: CustomPaginator }
-  ]
+  ],
+  animations: [
+    trigger('openClose', [
+      // ...
+      // state('open', style({
+      //   height: '60px',
+      //   width: '60px',
+      //   paddingRight: '0.5em'
+      // })),
+      // state('closed', style({
+      //   height: '160px',
+      //   width: '160px',
+      //   paddingRight: '0.5em'
+      // })),
+      // transition('open => closed', [
+      //   animate('0.5s')
+      // ]),
+      // transition('closed => open', [
+      //   animate('0.5s')
+      // ]),
+      state('closed', style({ transform: 'rotate(0)' })),
+      state('open', style({ transform: 'rotate(-360deg)' })),
+      transition('open => closed', [
+          animate('1s')
+        ]),
+        transition('closed => open', [
+          animate('1s')
+        ]),   
+    ]),
+  ],
 })
 
 
@@ -66,6 +96,7 @@ export class ListComponent implements OnInit {
   filter!: Client;
   parsed: any;
   name: any;
+  isPageLoaded: boolean = false;
   length: number = 0;
   isShowing: boolean = false;
   // loading$: boolean = false;
@@ -86,7 +117,6 @@ export class ListComponent implements OnInit {
   // };
 
   animationCreated(animationItem: AnimationItem): void {
-    console.log(animationItem);
   }
   constructor(
     private dataService: DataService,
@@ -104,20 +134,16 @@ export class ListComponent implements OnInit {
     this.matIconRegistry.addSvgIcon('arrow-animated', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'loader-dark.svg'))
   }
 ngOnInit() {    
-    console.log('spinner is ', this.loading)
+    
     const app = initializeApp(environment.firebaseConfig);
-    if (app != null) {     
-      console.log('app')
+    if (app != null) {   
       this.clicked = true;
       this.sort.direction = 'desc'    
       // this.sortData(this.sort)    
       const currentUser = getAuth();
-      console.log(currentUser)
       onAuthStateChanged(currentUser, async (user) => {
         if (user) {          
           this.isLoadingIcon = false;
-          console.log('query to data service', user)
-          console.log(user.phoneNumber)
           const phone = user.phoneNumber
           this.requirePermissions(phone!, user);
             //регистрация токена устройства
@@ -125,25 +151,25 @@ ngOnInit() {
             .then((result) => {
               this.dataService.checkToken(result)
                 .subscribe(() => {
-                  this.dataService.message = true;    
-                  console.log('spinner is ', this.loading)              
+                  this.dataService.message = true;                 
                   // this.isLogged = this.data.message;
                   setInterval(() => {
-                    this.isLoadingIcon = false
+                    this.isLoadingIcon = false;
+                    this.isPageLoaded = true;
                   }, 3000)
                 })
               // this.isLogged = true; 
             })
           // ...
         } else {
-          console.log('User is signed out');
           this.dataService.message = false;
           // this.isLogged = this.data.message;
           // this.loading$ = false;
           this.promiseLoadingRun.next(false);
           setInterval(() => {
             this.isLoadingIcon = false;
-            // this.router.navigateByUrl('unauthorized');
+            this.isPageLoaded = true;
+            this.router.navigateByUrl('unauthorized');
           }, 3000)
           // User is signed out
           // this.isLogged = false;
@@ -152,7 +178,6 @@ ngOnInit() {
       });
     }
     else {
-      console.log('app is null')
     }
     //this.getUsers();
     
@@ -166,35 +191,30 @@ ngOnInit() {
       .subscribe(data => {
       this.clients = data;
       this.dataSource = new MatTableDataSource<Client>(this.clients);
-      console.log('datasourse loaded', this.dataSource.data)
       this.promiseLoadingRun.next(false);
       this.update(true, phone);
+      this.isPageLoaded = true;
       })
     }, error => {
-      console.log('Error, вы не админ!')
+      this.alertMessage = "Нет соединения с сервером"
       return this.dataService.getDevicesByUser(user.phoneNumber!)
       .subscribe((data: Device[]) => {
-        console.log('loaded devices', data);
         this.devices = data;
         this.promiseLoadingRun.next(false);
         this.dataSource = new MatTableDataSource<Device>(this.devices);
         this.update(false, phone);
+        this.isPageLoaded = true;
       }, error => {
         this.promiseLoadingRun.next(false);
+        this.isPageLoaded = true;
         if(error.status == '404'){
-          console.log("Не найден пользователь")
           this.alertMessage = "Вас ещё не зарегистрировали в нашей базе данных, либо Вы ещё не подавали заявки на ремонт"
-        }
-        else {
-          console.log('spinner is ', this.loading)
-          console.log(error)
         }
       })
     })
   }
 
   getRecord(value: any){
-    console.log(value)
     this.detailsService.addItem(value);
     // this.router.navigate(['details']);
     const dialogref = this.dialog.open(DetailsComponent, {
@@ -202,7 +222,6 @@ ngOnInit() {
       restoreFocus: true
     })
     dialogref.afterClosed().subscribe((result) => {
-      console.log('details closed ', result);
       if(result != undefined && result.data == 'fetched'){
         // this.getUsers();
       }
@@ -239,7 +258,6 @@ ngOnInit() {
       return this.dataService.getUsers()
       .subscribe(
         (data: Client[]) => {
-          console.log(data)
           this.promiseLoadingRun.next(false);
           this.clients = data;
           this.length = data.length
@@ -251,7 +269,6 @@ ngOnInit() {
           this.dataSource = new MatTableDataSource(this.sortedData);
           this.dataSource.paginator = this.paginator;
         }, (error) => {
-          console.log(error)
           this.isShowing = false;
           // this.loading$ = false;
           this.promiseLoadingRun.next(false);
@@ -266,13 +283,11 @@ ngOnInit() {
       return this.dataService.getDevicesByUser(phone)
       .subscribe((data: Device[]) => {
         this.promiseLoadingRun.next(false);
-        console.log('loaded devices', data);
         this.devices = data;
         // this.loading$ = false;
         this.promiseLoadingRun.next(false);
         this.dataSource = new MatTableDataSource<Device>(this.devices);
       }, error => {
-        console.log(error)
           this.isShowing = false;
           this.promiseLoadingRun.next(false);
           // this.loading$ = false;
@@ -321,7 +336,6 @@ ngOnInit() {
   sortData(sort: Sort) {
     // this.loading$ = true;
     this.promiseLoadingRun.next(false);
-    console.log(this.clients)
     const data = this.clients.slice();
     if (!sort.active || sort.direction === '') {
       this.sortedData = data;
@@ -330,7 +344,6 @@ ngOnInit() {
 
     data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
-      console.log(sort.direction)
       switch (sort.active) {
         case 'name':
           return this.compare(a.name, b.name, isAsc);

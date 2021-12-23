@@ -1,14 +1,18 @@
 <div class="main-container">
-    <span class="lottie" *ngIf="isLoadingIcon; else elseBlock">
-      <ng-lottie [options]="options" width="200px" height="300px"></ng-lottie>
-    </span>
+  <span *ngIf="!isPageLoaded && alertMessage == ''; else elseBlock">
+    <lord-icon
+    trigger="loop"
+    src="../assets/svg/animated-logo(no background)2.json"
+    style="height: 500px; width: 500px;"
+    ></lord-icon>
+  </span>
     <span *ngIf="alertMessage != ''" style="text-align: center;">
       <h2>{{alertMessage}}</h2>
     </span> 
   
     <ng-template #elseBlock>
 
-      <div id="div-table" class="example-container" mat-elevation-z8>
+      <div id="div-table" *ngIf="alertMessage == ''" class="example-container" mat-elevation-z8>
         <mat-form-field appearance="standard">
           <mat-label>Поиск</mat-label>
           <input matInput (keyup)="applyFilter($event)" placeholder="Напр. микроволновая печь" #input>

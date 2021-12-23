@@ -29,10 +29,10 @@
       <button mat-menu-item>Item 1</button>
       <button mat-menu-item>Item 2</button>
     </mat-menu>
-    <button *ngIf="isLogged" (click)="singIn()" matTooltip="Войти" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-      <mat-icon mat-button>login</mat-icon>
+    <button *ngIf="!(isLogged | async)" (click)="auth()" matTooltip="Войти" mat-icon-button >
+      <mat-icon>login</mat-icon>
     </button>
-    <button *ngIf="!isLogged" (click)="logout()" matTooltip="Выйти" mat-icon-button class="material-icons md-light md-inactive">
+    <button *ngIf="isLogged | async" (click)="logout()" matTooltip="Выйти" mat-icon-button >
       <mat-icon>logout</mat-icon>
     </button>
   </section>

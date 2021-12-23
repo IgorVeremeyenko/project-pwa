@@ -12,6 +12,8 @@ import { AnimationOptions } from 'ngx-lottie';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { BehaviorSubject } from 'rxjs';
+import { map } from '@firebase/util';
 
 
 @Component({
@@ -57,7 +59,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   private pathSvg: string = "./assets/svg/";
   path!: any;
-  isLogged: boolean = false;
+  // isLogged: boolean = false;
+  isLogged = new BehaviorSubject<boolean>(false);
+
+  
   isLoadingIcon: boolean = true;
   options: AnimationOptions = {
     path: './assets/svg/87164-loading-animation.json'    
@@ -86,6 +91,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   addUser(){
     this.router.navigateByUrl('add-client');
   }
+  auth(){
+    this.router.navigateByUrl('authorization')
+  }
   Unlink() {
     const app = initializeApp(environment.firebaseConfig);
     const auth = getAuth();
@@ -105,15 +113,20 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    console.log(this.isLogged.getValue())
     const app = initializeApp(environment.firebaseConfig);   
     // this.isLoadingIcon = true;   
     const user = this.authService.checkAuth();
     if(user != null){
+      this.isLogged.next(true);
       // this.isLogged = true;
       this.isLoadingIcon = false;
-      console.log(this.isLogged)
     }
-    this.isLogged = false;
+    else{
+      // this.isLogged = false;
+      this.isLogged.next(false);
+      this.router.navigateByUrl('authorization');
+    }
   }
   
   goLogin() {

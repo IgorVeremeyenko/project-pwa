@@ -7,6 +7,10 @@
   width: 100%;
   overflow: auto;
 }
+.main-container {
+  display: flex;
+  justify-content: center;
+}
 .mat-table {
   border-collapse: collapse !important;
   margin: 25px 10px 10px !important;

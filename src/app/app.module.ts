@@ -29,6 +29,7 @@ import { LoginByPhoneComponent } from './dialogs/login-by-phone/login-by-phone.c
 import { AddClientComponent } from './components/add-client/add-client.component';
 import { defineLordIconElement } from 'lord-icon-element';
 import lottie from 'lottie-web';
+import { IntroComponent } from './dialogs/intro/intro.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -49,7 +50,8 @@ export function playerFactory() {
     SureComponent,
     UnauthorizedComponent,
     LoginByPhoneComponent,
-    AddClientComponent
+    AddClientComponent,
+    IntroComponent
   ],
   imports: [
     TextMaskModule,
