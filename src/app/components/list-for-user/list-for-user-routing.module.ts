@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
+import { ListForUserComponent } from './list-for-user.component';
 import { RouterModule, Routes } from '@angular/router';
-import { AddClientComponent } from './add-client.component';
 
-const routes: Routes = [{ path: '', component: AddClientComponent}];
+const routes: Routes = [{ path: '', component: ListForUserComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AddClientRoutingModule { }
+export class ListForUserRoutingModule { }

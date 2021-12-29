@@ -30,6 +30,7 @@ import { AddClientComponent } from './components/add-client/add-client.component
 import { defineLordIconElement } from 'lord-icon-element';
 import lottie from 'lottie-web';
 import { IntroComponent } from './dialogs/intro/intro.component';
+import { ListForUserComponent } from './components/list-for-user/list-for-user.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -51,7 +52,8 @@ export function playerFactory() {
     UnauthorizedComponent,
     LoginByPhoneComponent,
     AddClientComponent,
-    IntroComponent
+    IntroComponent,
+    ListForUserComponent
   ],
   imports: [
     TextMaskModule,

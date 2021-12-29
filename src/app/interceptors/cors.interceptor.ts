@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class CorsInterceptor implements HttpInterceptor {
 
+
   constructor() {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -18,6 +19,8 @@ export class CorsInterceptor implements HttpInterceptor {
     request = request.clone({ headers: request.headers.set(
       'Access-Control-Allow-Origin', ['https://elite-service-92d53.web.app', 'http://localhost:4200/','http://192.168.0.100:8080/', '*']
     ) });
+    
     return next.handle(request);
   }
+
 }

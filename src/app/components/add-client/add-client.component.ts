@@ -13,6 +13,7 @@ import { AnimationItem } from 'lottie-web';
 import { AnimationOptions } from 'ngx-lottie';
 import { Device } from 'src/app/interfaces/device';
 import { Router } from '@angular/router';
+import { slideInAnimation } from 'src/app/animations';
 
 @Component({
   selector: 'app-add-client',
@@ -24,6 +25,9 @@ import { Router } from '@angular/router';
       useValue: { showError: true },
     },
   ],
+  animations: [
+    slideInAnimation
+  ]
 })
 export class AddClientComponent implements OnInit {
 

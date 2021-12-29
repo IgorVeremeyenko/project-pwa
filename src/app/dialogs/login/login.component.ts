@@ -5,19 +5,21 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'angular-bootstrap-md';
-import { 
-  browserLocalPersistence, 
-  ConfirmationResult, 
-  FacebookAuthProvider, 
-  getAuth, 
-  GoogleAuthProvider, 
-  linkWithPhoneNumber, 
-  RecaptchaVerifier, 
-  setPersistence, 
-  signInWithPhoneNumber, 
-  signInWithPopup 
+import {
+  browserLocalPersistence,
+  ConfirmationResult,
+  FacebookAuthProvider,
+  getAuth,
+  GoogleAuthProvider,
+  linkWithPhoneNumber,
+  RecaptchaVerifier,
+  setPersistence,
+  signInWithPhoneNumber,
+  signInWithPopup
 } from 'firebase/auth';
 import { AuthComponent } from 'src/app/auth/auth.component';
+import { DataService } from 'src/app/services/data.service';
+import { MessagingService } from 'src/app/services/messaging.service';
 import { LoginByPhoneComponent } from '../login-by-phone/login-by-phone.component';
 
 @Component({
@@ -50,12 +52,14 @@ export class LoginComponent implements OnInit {
     public dialogRef: MatDialogRef<LoginComponent>,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private readonly router: Router,    
-    private readonly dialog: MatDialog
-    ) {
+    private readonly router: Router,
+    private readonly dialog: MatDialog,
+    private messages: MessagingService,
+    private dataService: DataService
+  ) {
     this.matIconRegistry.addSvgIcon('google', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'google.svg'))
     this.matIconRegistry.addSvgIcon('facebook', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'facebook.svg'))
-   }
+  }
 
   ngOnInit(): void {
     console.log(this.data)
@@ -91,14 +95,14 @@ export class LoginComponent implements OnInit {
           else
             this.message = `Добро пожаловать`
         })
-        .then(() => {          
+        .then(() => {
           this.isLoading = true;
-          setTimeout(() => {this.dialogRef.close(); this.router.navigateByUrl('')}, 3000);
+          setTimeout(() => { this.dialogRef.close(); this.router.navigateByUrl('') }, 3000);
           this.isLoading = false;
         })
         .catch(err => console.log(err))
     }
-    
+
   }
   confirmation(result: ConfirmationResult) {
     console.log(result)
@@ -110,27 +114,27 @@ export class LoginComponent implements OnInit {
       .catch(err => console.log(err))
   }
   async SignIn(phoneNumber: string) {
-    try {      
-      
+    try {
+
       setPersistence(this.auth, browserLocalPersistence)
-          .then(() => {
-            const applicationVerifier = new RecaptchaVerifier('recaptcha-container', { size: 'invisible' }, this.auth);
-            signInWithPhoneNumber(this.auth, phoneNumber, applicationVerifier)
-              .then((result) => {
-                this.OTP_Window = true;
-                this.message = `Мы отправили проверочный код на номер ${phoneNumber}, введите полученный код ниже`
-                this.confirmResult = result;
-                console.log(result)
-              })
-            // Obtain a verificationCode from the user.            
-          })
-          .catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            this.message = errorMessage;
-          })
-      
+        .then(() => {
+          const applicationVerifier = new RecaptchaVerifier('recaptcha-container', { size: 'invisible' }, this.auth);
+          signInWithPhoneNumber(this.auth, phoneNumber, applicationVerifier)
+            .then((result) => {
+              this.OTP_Window = true;
+              this.message = `Мы отправили проверочный код на номер ${phoneNumber}, введите полученный код ниже`
+              this.confirmResult = result;
+              console.log(result)
+            })
+          // Obtain a verificationCode from the user.            
+        })
+        .catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          this.message = errorMessage;
+        })
+
 
     } catch (error) {
       console.log('error', error)
@@ -138,6 +142,7 @@ export class LoginComponent implements OnInit {
   }
   signInGoogle() {
     this.dialogRef.close()
+    
     signInWithPopup(this.auth, this.providerGoogle)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -146,10 +151,16 @@ export class LoginComponent implements OnInit {
         // The signed-in user info.
         const user = result.user;
         console.log(user)
-        if(!user.phoneNumber){
-          this.dialog.open(LoginByPhoneComponent, {disableClose: true, data: this.auth.currentUser})
+        if (!user.phoneNumber) {
+          this.dialog.open(LoginByPhoneComponent, { disableClose: true, data: this.auth.currentUser })
         }
-       
+        // setPersistence(this.auth, browserLocalPersistence).then(() => {
+        //   const token = this.messages.token.then(result => {
+        //     this.dataService.checkToken(result!)
+        //   });
+          
+        //   this.router.navigateByUrl('');
+        // })
         this.router.navigateByUrl('');
         // ...
       }).catch((error) => {
@@ -161,6 +172,7 @@ export class LoginComponent implements OnInit {
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
         this.message = errorMessage;
+        console.log(error)
         // ...
       });
   }
