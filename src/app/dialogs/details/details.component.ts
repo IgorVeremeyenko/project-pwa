@@ -8,6 +8,7 @@ import { HomeComponent } from '../../components/home/home.component';
 import { Client } from 'src/app/interfaces/client';
 import { DataService } from 'src/app/services/data.service';
 import { SureComponent } from '../sure/sure.component';
+import { ListComponent } from 'src/app/components/list/list.component';
 
 @Component({
   selector: 'app-details',
@@ -35,6 +36,7 @@ export class DetailsComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private readonly dialog: MatDialog,
     private readonly dataService: DataService,
+    private listUsers: ListComponent
     ) { 
       iconRegistry.addSvgIconLiteral('thumbs-up', sanitizer.bypassSecurityTrustHtml('src/assets/svg/event_note_black_24dp.svg'));
     }
@@ -65,7 +67,13 @@ export class DetailsComponent implements OnInit {
         device.status = true;
         this.dataService.setStatusTrue(this.data.device.id, device)
         .subscribe((result) => {
-          console.log('fetched success ', result);
+          const tok = this.dataService.getTokenByPhone(this.data.phoneNumber)
+          .subscribe(t => {
+            console.log('phone from base: ', t);
+            this.dataService.sendNotification(this.listUsers.userToken.token!, this.data.device.deviceName)
+            .subscribe(t => console.log('send notification ', t));
+          });
+          
           this.isLoading = !this.isLoading;
           this.dialogRef.close({data: 'fetched'});
         }, error => {

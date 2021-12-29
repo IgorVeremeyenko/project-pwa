@@ -9,17 +9,20 @@ import { Admin } from '../interfaces/admin';
 import { Client } from '../interfaces/client';
 import { Device } from '../interfaces/device';
 import * as CryptoJS from "crypto-js"
+import { UserToken } from '../interfaces/user-token';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
   public url = "https://localhost:7214/api/ClientsDevices/"
-  public urlTokenVerify = "https://localhost:7214/api/Auth/"
+  public urlSendMessage = "https://localhost:7214/api/Auth/"
   public urlPost = "https://localhost:7214/api/ClientsDevices/"
   public urlCheckUser = "https://localhost:7214/api/Clients/phone?phoneNumber="
   public urlChangeStatus = "https://localhost:7214/api/Devices/"
   public urlRequirePermissions = "https://localhost:7214/api/Admins/"  
+  public urlTokens = "https://localhost:7214/api/Tokens"
+  public urlGetToken = "https://localhost:7214/api/Tokens/"
   cache: Map<string, Observable<Client[]>> = new Map<string, Observable<Client[]>>();
   message: boolean = false;
   token!: string;
@@ -53,9 +56,8 @@ export class DataService {
     console.log(this.cache) 
   }
 
-  registerTokenForUser(token: string, user: Client){
-  
-    return this._http.post(this.urlTokenVerify + token, user);
+  registerTokenForUser(userToken: UserToken){   
+    return this._http.post(this.urlTokens, userToken);
   }
   getUsers() {
     console.log(this.cache)
@@ -81,6 +83,21 @@ export class DataService {
 
   getDevicesByUser(phone: string){
     return this._http.get<Device[]>(this.urlPost + phone);
+  }
+
+  getTokenByPhone(phoneNumber: string){
+    return this._http.get(this.urlGetToken + phoneNumber);
+  }
+
+  sendNotification(token: string, tech: string){
+    const body = {
+      message: {
+        Title: `Ваша техника готова: ${tech}`,
+        Body: "Приезжайте, забирайте"
+      },
+      deviceToken: token
+    }
+    return this._http.post(this.urlSendMessage, body);
   }
 
   setStatusTrue(id: number, item: Device){

@@ -23,6 +23,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { AppComponent } from 'src/app/app.component';
 import { slideInAnimation } from 'src/app/animations';
 import { MessagingService } from 'src/app/services/messaging.service';
+import { UserToken } from 'src/app/interfaces/user-token';
 
 class CustomPaginator extends MatPaginatorIntl {
 
@@ -89,6 +90,7 @@ export class ListComponent implements OnInit {
   noData: boolean = false;
   clicked: boolean = false;
   sortedData!: Client[];
+  userToken = new UserToken;
   displayedColumns: string[] = [
     'created', 'phone',
     'device', 'status',
@@ -130,26 +132,20 @@ ngOnInit() {
     console.log(currentUser)
     onAuthStateChanged(currentUser!, async (user) => {
       if (user) {    
+        console.log(user)
         this.dataService.change(true);    
         this.mainFunction.onChanged(true);  
         this.isLoadingIcon = false;
         const phone = user.phoneNumber
         this.requirePermissions(phone!, user);
           //регистрация токена устройства
-        return await user.getIdToken()
-          .then((result) => {
-            this.messages.token.then(result => console.log(result))
-            // this.dataService.checkToken(result)
-            //   .subscribe(() => {
-            //     this.dataService.message = true;                 
-            //     // this.isLogged = this.data.message;
-            //     setInterval(() => {
-            //       this.isLoadingIcon = false;
-            //       this.isPageLoaded = true;
-            //     }, 3000)
-            //   })
-            // this.isLogged = true; 
-          })
+        const token = this.messages.token.then(res => {
+          console.log(res);
+          this.userToken.phoneNumber = user.phoneNumber!;
+          this.userToken.token = res;
+          this.dataService.registerTokenForUser(this.userToken)
+          .subscribe(result => console.log('registar token: ', result))
+        })
         // ...
       } else {
         this.dataService.change(false);  
@@ -183,7 +179,7 @@ ngOnInit() {
   }
 
   requirePermissions(phone: string, user: any){
-    
+        
     this.dataService.requirePermissions(phone!)
     .subscribe((result: Admin[]) => {     
       this.dataService.getUsers()

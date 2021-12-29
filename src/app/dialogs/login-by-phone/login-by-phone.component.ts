@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { getAuth, linkWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence, signInWithPhoneNumber, RecaptchaVerifier, ConfirmationResult, PhoneAuthProvider, User, linkWithPhoneNumber, updateCurrentUser, updatePhoneNumber } from "firebase/auth";
+import { UserToken } from 'src/app/interfaces/user-token';
+import { MessagingService } from 'src/app/services/messaging.service';
 
 @Component({
   selector: 'app-login-by-phone',
@@ -24,10 +26,12 @@ export class LoginByPhoneComponent implements OnInit {
   applicationVerifier!: RecaptchaVerifier;
   phoneNumber!: string;
   verificationId!: any;
+  token!: UserToken
   constructor(
     public dialogRef: MatDialogRef<LoginByPhoneComponent>,
     private readonly router: Router,
     private fb: FormBuilder,
+    private messages: MessagingService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
@@ -61,10 +65,16 @@ export class LoginByPhoneComponent implements OnInit {
       console.log(this.otp_number)
       this.confirmResult.confirm(this.otp_number)
         .then(r => {    
-          if (r.user.displayName != null)
+          if (r.user.displayName != null){
             this.message = `Добро пожаловать, ${r.user.displayName}`
-          else
+            this.token.phoneNumber = r.user.phoneNumber!;
+            this.messages.token.then(result => this.token.token = result);
+          }
+          else{
             this.message = `Добро пожаловать`         
+            this.token.phoneNumber = r.user.phoneNumber!;
+            this.messages.token.then(result => this.token.token = result);
+          }
         })        
         .then((user) => {
           this.isLoading = true;             

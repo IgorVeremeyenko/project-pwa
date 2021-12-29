@@ -18,6 +18,7 @@ import {
   signInWithPopup
 } from 'firebase/auth';
 import { AuthComponent } from 'src/app/auth/auth.component';
+import { UserToken } from 'src/app/interfaces/user-token';
 import { DataService } from 'src/app/services/data.service';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { LoginByPhoneComponent } from '../login-by-phone/login-by-phone.component';
@@ -45,6 +46,7 @@ export class LoginComponent implements OnInit {
   confirmResult!: ConfirmationResult;
   providerGoogle = new GoogleAuthProvider();
   providerFacebook = new FacebookAuthProvider();
+  token = new UserToken;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: AuthComponent,
@@ -90,8 +92,11 @@ export class LoginComponent implements OnInit {
       this.otp_number = $event
       this.confirmResult.confirm(this.otp_number)
         .then(r => {
-          if (r.user.displayName != null)
+          if (r.user.displayName != null){
             this.message = `Добро пожаловать, ${r.user.displayName}`
+            this.token.phoneNumber = r.user.phoneNumber!;
+            this.messages.token.then(result => this.token.token = result);
+          }
           else
             this.message = `Добро пожаловать`
         })
@@ -108,7 +113,6 @@ export class LoginComponent implements OnInit {
     console.log(result)
     result.confirm(this.otp_number)
       .then(r => {
-        console.log(r.user.displayName);
         this.router.navigateByUrl('');
       })
       .catch(err => console.log(err))
@@ -126,6 +130,7 @@ export class LoginComponent implements OnInit {
               this.confirmResult = result;
               console.log(result)
             })
+           
           // Obtain a verificationCode from the user.            
         })
         .catch((error) => {
@@ -150,10 +155,14 @@ export class LoginComponent implements OnInit {
         const token = credential!.accessToken;
         // The signed-in user info.
         const user = result.user;
-        console.log(user)
         if (!user.phoneNumber) {
           this.dialog.open(LoginByPhoneComponent, { disableClose: true, data: this.auth.currentUser })
         }
+        
+        this.token.phoneNumber = user.phoneNumber!;
+        const dsfds = this.messages.token.then(result => this.token.token = result);        
+        this.dataService.registerTokenForUser(this.token)
+        .subscribe(t => console.log(t), error => console.log(error))
         // setPersistence(this.auth, browserLocalPersistence).then(() => {
         //   const token = this.messages.token.then(result => {
         //     this.dataService.checkToken(result!)
