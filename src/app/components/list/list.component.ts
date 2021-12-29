@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Injectable, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Injectable, OnInit, Output, ViewChild } from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorIntl, _MatPaginatorBase } from '@angular/material/paginator';
@@ -11,8 +11,6 @@ import { DataService } from 'src/app/services/data.service';
 import { AnimationItem } from 'lottie-web';
 import { AnimationOptions } from 'ngx-lottie';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { initializeApp } from 'firebase/app';
-import { environment } from 'src/environments/environment';
 import { Admin } from 'src/app/interfaces/admin';
 import { Device } from 'src/app/interfaces/device';
 import { GuardService } from 'src/app/services/guard.service';
@@ -22,6 +20,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { DetailsComponent } from 'src/app/dialogs/details/details.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AppComponent } from 'src/app/app.component';
+import { slideInAnimation } from 'src/app/animations';
+import { MessagingService } from 'src/app/services/messaging.service';
 
 class CustomPaginator extends MatPaginatorIntl {
 
@@ -44,33 +45,17 @@ class CustomPaginator extends MatPaginatorIntl {
     { provide: MatPaginatorIntl, useClass: CustomPaginator }
   ],
   animations: [
-    trigger('openClose', [
-      // ...
-      // state('open', style({
-      //   height: '60px',
-      //   width: '60px',
-      //   paddingRight: '0.5em'
-      // })),
-      // state('closed', style({
-      //   height: '160px',
-      //   width: '160px',
-      //   paddingRight: '0.5em'
-      // })),
-      // transition('open => closed', [
-      //   animate('0.5s')
-      // ]),
-      // transition('closed => open', [
-      //   animate('0.5s')
-      // ]),
-      state('closed', style({ transform: 'rotate(0)' })),
-      state('open', style({ transform: 'rotate(-360deg)' })),
-      transition('open => closed', [
-          animate('1s')
-        ]),
-        transition('closed => open', [
-          animate('1s')
-        ]),   
-    ]),
+    // trigger('openClose', [
+    //   state('closed', style({ transform: 'rotate(0)' })),
+    //   state('open', style({ transform: 'rotate(-360deg)' })),
+    //   transition('open => closed', [
+    //       animate('1s')
+    //     ]),
+    //     transition('closed => open', [
+    //       animate('1s')
+    //     ]),   
+    // ]),
+    
   ],
 })
 
@@ -78,6 +63,7 @@ class CustomPaginator extends MatPaginatorIntl {
 export class ListComponent implements OnInit {
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort: MatSort = new MatSort;
+  @Output() logged = new EventEmitter<boolean>();
   private path: string = "../../../assets/svg/";
   clients!: Client[];
   devices!: Device[];
@@ -129,58 +115,71 @@ export class ListComponent implements OnInit {
     private readonly detailsService: AddToDetailsService,
     private readonly router: Router,
     private readonly dialog: MatDialog,
+    private mainFunction: AppComponent,
+    private messages: MessagingService
   ) {
     this.matIconRegistry.addSvgIcon('arrow', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'circle arrow.svg'))
     this.matIconRegistry.addSvgIcon('arrow-animated', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'loader-dark.svg'))
   }
 ngOnInit() {    
-    
-    const app = initializeApp(environment.firebaseConfig);
-    if (app != null) {   
-      this.clicked = true;
-      this.sort.direction = 'desc'    
-      // this.sortData(this.sort)    
-      const currentUser = getAuth();
-      onAuthStateChanged(currentUser, async (user) => {
-        if (user) {          
+        
+    this.clicked = true;
+    this.sort.direction = 'desc'    
+    // this.sortData(this.sort)    
+    const currentUser = this.dataService.checkAuth();
+    console.log(currentUser)
+    onAuthStateChanged(currentUser!, async (user) => {
+      if (user) {    
+        this.dataService.change(true);    
+        this.mainFunction.onChanged(true);  
+        this.isLoadingIcon = false;
+        const phone = user.phoneNumber
+        this.requirePermissions(phone!, user);
+          //регистрация токена устройства
+        return await user.getIdToken()
+          .then((result) => {
+            this.messages.token.then(result => console.log(result))
+            // this.dataService.checkToken(result)
+            //   .subscribe(() => {
+            //     this.dataService.message = true;                 
+            //     // this.isLogged = this.data.message;
+            //     setInterval(() => {
+            //       this.isLoadingIcon = false;
+            //       this.isPageLoaded = true;
+            //     }, 3000)
+            //   })
+            // this.isLogged = true; 
+          })
+        // ...
+      } else {
+        this.dataService.change(false);  
+        this.mainFunction.onChanged(false); 
+        this.dataService.message = false;
+        // this.isLogged = this.data.message;
+        // this.loading$ = false;
+        this.promiseLoadingRun.next(false);
+        setInterval(() => {
           this.isLoadingIcon = false;
-          const phone = user.phoneNumber
-          this.requirePermissions(phone!, user);
-            //регистрация токена устройства
-          return await user.getIdToken()
-            .then((result) => {
-              this.dataService.checkToken(result)
-                .subscribe(() => {
-                  this.dataService.message = true;                 
-                  // this.isLogged = this.data.message;
-                  setInterval(() => {
-                    this.isLoadingIcon = false;
-                    this.isPageLoaded = true;
-                  }, 3000)
-                })
-              // this.isLogged = true; 
-            })
-          // ...
-        } else {
-          this.dataService.message = false;
-          // this.isLogged = this.data.message;
-          // this.loading$ = false;
-          this.promiseLoadingRun.next(false);
-          setInterval(() => {
-            this.isLoadingIcon = false;
-            this.isPageLoaded = true;
-            this.router.navigateByUrl('unauthorized');
-          }, 3000)
-          // User is signed out
-          // this.isLogged = false;
-          // this.message = "Вы не авторизованы"
-        }
-      });
-    }
-    else {
-    }
-    //this.getUsers();
+          this.isPageLoaded = true;
+          this.router.navigateByUrl('authorization');
+        }, 3000)
+        // User is signed out
+        // this.isLogged = false;
+        // this.message = "Вы не авторизованы"
+      }
+    });
+
+  //this.getUsers();
     
+  }
+
+  onChangeAuth(event: boolean){
+    this.logged.emit(event);
+  }
+
+  refreshTable(){
+    this.dataService.clearCache();
+    this.ngOnInit();
   }
 
   requirePermissions(phone: string, user: any){
@@ -199,6 +198,7 @@ ngOnInit() {
       this.alertMessage = "Нет соединения с сервером"
       return this.dataService.getDevicesByUser(user.phoneNumber!)
       .subscribe((data: Device[]) => {
+        
         this.devices = data;
         this.promiseLoadingRun.next(false);
         this.dataSource = new MatTableDataSource<Device>(this.devices);
@@ -231,7 +231,7 @@ ngOnInit() {
 
   ngAfterViewInit() {
     this.dataSource = new MatTableDataSource(this.sortedData);
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
   }
   // costumPaginator(){
   //   const customPaginatorIntl = new MatPaginatorIntl();
