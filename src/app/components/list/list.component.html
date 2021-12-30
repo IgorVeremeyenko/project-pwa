@@ -1,0 +1,106 @@
+<div class="main-container">
+  <span *ngIf="!isPageLoaded && alertMessage == ''; else elseBlock">
+    <lord-icon
+    trigger="loop"
+    src="../assets/svg/animated-logo(no background)2.json"
+    style="height: 500px; width: 500px;"
+    ></lord-icon>
+  </span>
+    <span *ngIf="alertMessage != ''" style="text-align: center;">
+      <h2>{{alertMessage}}</h2>
+    </span> 
+    <button mat-icon-button (click)="refreshTable()"><mat-icon>refresh</mat-icon></button>
+    <ng-template #elseBlock>
+
+      <div id="div-table" *ngIf="alertMessage == ''" class="example-container" mat-elevation-z8>
+        <mat-form-field appearance="standard">
+          <mat-label>Поиск</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Напр. микроволновая печь" #input>
+        </mat-form-field>
+         
+         <div class="spinner-container" *ngIf="loading | async">
+           <mat-spinner></mat-spinner>
+          </div>
+        <mat-table #table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
+          
+          
+          <ng-container matColumnDef="created" >
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Дата регистрации </mat-header-cell>
+            
+            <mat-cell *matCellDef="let element" id="date" matTooltip="{{element.device.dateToAdd | date: 'd MMMM y, HH:mm'}}">
+              
+              <span class="mobile-label">Дата регистрации: </span>
+            <mat-icon class="calendar">
+                event_note
+                </mat-icon>  {{element.device.dateToAdd | date: 'd MMMM y, HH:mm'}}
+            </mat-cell>
+          </ng-container>
+      
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Имя клиента </mat-header-cell>
+            <mat-cell *matCellDef="let element" id="name">
+              <span class="mobile-label">Имя клиента:</span>
+              <div>
+      
+                {{element.client.name}}
+              </div>
+            </mat-cell>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="device">
+            <mat-header-cell *matHeaderCellDef id="device-header" mat-sort-header> Название устройства </mat-header-cell>
+            <mat-cell *matCellDef="let element" [matTooltip]="element.device.deviceName" matTooltipPosition="after">
+              <span class="mobile-label">Наименование устройства:</span>
+              {{element.device.deviceName}}
+            </mat-cell>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Состояние ремонта </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span class="mobile-label">Состояние ремонта:</span>
+              <mat-icon *ngIf="!element.device.status" color="warn">warning</mat-icon>
+              <mat-icon *ngIf="element.device.status" color="accent">task_alt</mat-icon>
+               {{element.device.status | readyNo: element.device.dateToAdd}}
+            </mat-cell>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef> Почта </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span class="mobile-label">Почта:</span>
+              {{element.client.email}}
+            </mat-cell>
+          </ng-container>
+      
+      
+          <ng-container matColumnDef="phone" >
+            <div class="flat">
+              <mat-header-cell *matHeaderCellDef id="phone-header"> Номер телефона </mat-header-cell>
+              
+              <mat-cell *matCellDef="let element" id="phone" >
+                <span class="mobile-label">Номер телефона:</span>
+                
+                <mat-icon class="phone-icon">phone_in_talk</mat-icon> {{element.client.phoneNumber}}
+                <p class="mobile-label-element"> </p>
+              </mat-cell>
+            </div>
+          </ng-container>
+      
+          <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+          <mat-row matRipple  (click)="getRecord(row)" 
+            *matRowDef="let row; columns: displayedColumns;">
+            
+          </mat-row>            
+        </mat-table>
+      
+        <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator> -->
+      </div>
+    </ng-template>
+    
+  
+</div>
+

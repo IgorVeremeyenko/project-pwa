@@ -1,92 +1,21 @@
-// .example-container {
-//     display: flex;
-//     flex-direction: column;
-//     // max-height: 800px;
-//     min-width: 400px;
-//     width: 60em;
-//   }
-//   #div-table {
-//     border-radius: 8px;
-//     overflow:hidden !important;
-//   }
-//   .mat-table {
-//     overflow: auto;
-//     // max-height: 800px;
-//   }
-//   .mat-row:hover .mat-cell {
-//     border-color: #f44336;
-//     cursor: pointer;
-//   }
-//   .example-spacer {
-//     flex: 1 1 auto;
-//   }
-  
-//   .mobile-label {
-//     display: none;
-//   }
-
-//   ::ng-deep .mat-header-cell {
-//     display:flex;
-//     justify-content:center;
-//   }
-//   .mat-cell:last-of-type{
-//     justify-content: center;
-//   }
-//   .action {
-//     flex: 1;
-//   }
-  
-//   @media(max-width: 860px) {
-//     .mobile-label {
-//       width: 170px;
-//       display: inline-block;
-//       font-weight: bold;
-//     }
-//     .example-container{
-//         width: 400px;
-//     }
-
-//     .mobile-label span {
-//       margin-right: 1rem;
-//     }
-  
-//     .mat-header-row {
-//       display: none;
-//     }
-  
-//     .mat-row { 
-//       flex-direction: column;
-//       align-items: start;
-//       padding: 8px;
-//     }
-    
-//     .mat-cell, .mat-footer-cell {
-//       padding: 1rem;
-//       border-style: none none solid none;
-//       border-width: 0.01rem;
-//       border-radius: 5px;
-//       border-color: rgba(255,255,255,.12);
-//       min-width: -webkit-fill-available;
-//     }
-//     .mat-cell .cdk-cell .cdk-column-actions .mat-column-actions{
-//       border-style: none!important;
-//       color: red;
-//     }
-//     .mat-row, .mat-footer-row{
-//       min-height: auto;
-//     }
-//     .mat-row .mat-cell :hover {
-//       box-shadow: outset 0 0 11px 4px #00000052, 0em 0 0.4em #00000047;
-//     }
-
-//     .mat-table {
-//       border-radius: 8px;
-//       overflow: hidden !important;
-//       border-collapse: separate!important;
-//       border-spacing:0 4px!important;
-//     }
-//     #div-table {
-//       border-radius: 8px;
-//       overflow:hidden !important;
-//     }
-//   }
+.lottie {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.buttons {
+    width: 7rem;
+    display: flex;
+    justify-content: space-between;
+}
+.logo {
+    display: flex;
+    align-items: center;
+}
+.mat-toolbar {
+    justify-content: space-between!important;
+}
+.mat-accent {
+    display: none;
+}

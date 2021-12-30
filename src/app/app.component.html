@@ -1,2 +1,43 @@
+<mat-toolbar color="warn">
+  <section class="logo">
+    <mat-icon class="icons" style="height: 60px;width: 60px;" svgIcon="logo"></mat-icon>
+    <span style="padding-left: 0.5em;">GOPR-SERVICE</span>
+  </section>
+  <span class="lottie" *ngIf="isLoadingIcon">
+    <mat-icon class="icons" svgIcon="arrow-animated"></mat-icon>
+  </span>
+  <button mat-button (click)="home()">Home</button>
+  <button mat-button (click)="list()">List</button>
+  <button mat-button (click)="listForUser()">List for user</button>
+  <span matRipple style="cursor: pointer; border-radius: 32px;" matTooltip="Добавить клиента" (click)="addUser()">
+    <lord-icon
+    trigger="hover"
+    colors="primary:#000000,secondary:#000000"
+    src="../assets/svg/add-user.json"
+    style="height: 50px; width: 50px;"
+  ></lord-icon>  
+  </span>
+  <button mat-flat-button disabled (click)="Unlink()">Unlink</button>
+  <span class="spacer"></span>
+  <nav>
+    <button mat-button (click)="toggle()">Toggle Open/Close</button>
+  </nav>
+  <section class="buttons">
+    <button mat-icon-button >
+      <mat-icon matBadge="4" matBadgeOverlap="false"  (click)="goToNotifications()">notifications</mat-icon>
+    </button>    
+    <button *ngIf="!(isLogged | async)" (click)="auth()" matTooltip="Войти" mat-icon-button >
+      <mat-icon>login</mat-icon>
+    </button>
+    <button *ngIf="isLogged | async" (click)="logout()" matTooltip="Выйти" mat-icon-button >
+      <mat-icon>logout</mat-icon>
+    </button>
+  </section>
+</mat-toolbar>
+  
 
-<router-outlet></router-outlet>
+<div [@routeAnimations]="prepareRoute(outlet)">
+  <router-outlet #outlet="outlet"></router-outlet>
+</div>
+
+<!-- <app-footer></app-footer> -->
