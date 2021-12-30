@@ -136,19 +136,12 @@ ngOnInit() {
         const phone = user.phoneNumber
         this.requirePermissions(phone!, user);
           //регистрация токена устройства
-        return await user.getIdToken()
-          .then((result) => {
-            this.messages.token.then(result => console.log(result))
-            // this.dataService.checkToken(result)
-            //   .subscribe(() => {
-            //     this.dataService.message = true;                 
-            //     // this.isLogged = this.data.message;
-            //     setInterval(() => {
-            //       this.isLoadingIcon = false;
-            //       this.isPageLoaded = true;
-            //     }, 3000)
-            //   })
-            // this.isLogged = true; 
+          const token = this.messages.token.then(res => {
+            console.log(res);
+            this.dataService.token.phoneNumber = user.phoneNumber!;
+            this.dataService.token.token = res;
+            this.dataService.registerTokenForUser(this.dataService.token)
+            .subscribe(result => console.log('registar token: ', result))
           })
         // ...
       } else {

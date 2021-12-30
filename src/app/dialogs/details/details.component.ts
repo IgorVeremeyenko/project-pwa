@@ -22,6 +22,7 @@ export class DetailsComponent implements OnInit {
   dataSource = this.ELEMENT_DATA;
   public isLoading!: boolean;
   public value!: string;
+  phone!: string;
   configSnackBar: MatSnackBarConfig = {
     panelClass: 'center',
     horizontalPosition: 'center', 
@@ -40,7 +41,8 @@ export class DetailsComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    console.log(this.data.device.status)
+    this.phone = this.data.client.phoneNumber;
+    console.log(this.phone)
     this.ELEMENT_DATA = this.data;
     this.dataSource = this.ELEMENT_DATA
     this.value = this.data.client.phoneNumber
@@ -59,7 +61,6 @@ export class DetailsComponent implements OnInit {
     const dialogRef = this.dialog.open(SureComponent);
     dialogRef.afterClosed().subscribe((result) => {
       if(result){
-        console.log(`Dialog result: ${result}`);
         this.isLoading = !this.isLoading;
         const device = this.data.device
         device.status = true;
@@ -67,6 +68,13 @@ export class DetailsComponent implements OnInit {
         .subscribe((result) => {
           console.log('fetched success ', result);
           this.isLoading = !this.isLoading;
+          console.log('phone number from data ', this.phone)
+          this.dataService.getTokenByPhone(this.phone)
+          .subscribe((t) => {
+          console.log('token from base: ', t);
+          this.dataService.sendNotification(this.dataService.token.token!, this.data.device.deviceName)
+          .subscribe(t => console.log('send notification ', t), error => console.log('send notigication error ', error));
+        }, error => console.log('phone from base ', error))
           this.dialogRef.close({data: 'fetched'});
         }, error => {
           console.log(error);
@@ -74,7 +82,9 @@ export class DetailsComponent implements OnInit {
           this.configSnackBar.duration = 5000
           this.openSnackBar("Не удалось отправить уведомление", this.configSnackBar);
           this.dialogRef.close({data: 'notFetched'})
-        })
+        });
+        
+
       }
       else {
         return;
