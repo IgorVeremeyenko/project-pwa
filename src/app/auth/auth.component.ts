@@ -21,9 +21,7 @@ export class AuthComponent implements OnInit {
 
   openDialog() {
     this.dialog.open(LoginComponent, {
-      data: {
-        animal: 'panda',
-      },
+      
       disableClose: true
     });
   }

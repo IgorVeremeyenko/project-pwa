@@ -12,8 +12,9 @@ import { AnimationOptions } from 'ngx-lottie';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { animate, animateChild, group, query, state, style, transition, trigger } from '@angular/animations';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
 import { slideInAnimation } from './animations';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-root',
@@ -26,11 +27,15 @@ import { slideInAnimation } from './animations';
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'project-pwa';
   isOpen = true;
-
+  matches: boolean = false;
   private pathSvg: string = "./assets/svg/";
   path!: any;
   isLogged = new BehaviorSubject<boolean>(false);
-
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+  .pipe(
+    map(result => result.matches),
+    shareReplay()
+  );
   isLoadingIcon: boolean = true;
   options: AnimationOptions = {
     path: './assets/svg/87164-loading-animation.json'
@@ -41,7 +46,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private readonly authService: DataService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private dataService: DataService
+    private dataService: DataService,
+    public breakpointObserver: BreakpointObserver
   ) {
 
     this.matIconRegistry.addSvgIcon('arrow-animated', this.domSanitizer.bypassSecurityTrustResourceUrl(this.pathSvg + 'loader-dark.svg'));
@@ -100,7 +106,15 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     // const app = initializeApp(environment.firebaseConfig);   
-    // this.isLoadingIcon = true;   
+    // this.isLoadingIcon = true;  
+    this.breakpointObserver.observe(['(min-width: 830px)'])
+    .subscribe((state: BreakpointState) => {
+      if (state.matches) {
+        this.matches = true;
+      } else {
+        this.matches = false;
+      }
+    });
     const user = this.authService.checkAuth();
     if (user != null) {
       // this.isLogged.next(true);

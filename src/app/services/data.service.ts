@@ -15,14 +15,14 @@ import { UserToken } from '../interfaces/user-token';
   providedIn: 'root'
 })
 export class DataService {
-  public url = "https://localhost:7214/api/ClientsDevices/"
-  public urlSendMessage = "https://localhost:7214/api/Auth/"
-  public urlPost = "https://localhost:7214/api/ClientsDevices/"
-  public urlCheckUser = "https://localhost:7214/api/Clients/phone?phoneNumber="
-  public urlChangeStatus = "https://localhost:7214/api/Devices/"
-  public urlRequirePermissions = "https://localhost:7214/api/Admins/"  
-  public urlTokens = "https://localhost:7214/api/Tokens"
-  public urlGetToken = "https://localhost:7214/api/Tokens/"
+  public url = "https://database.gopr-service.com.ua/api/ClientsDevices/"
+  public urlSendMessage = "https://database.gopr-service.com.ua/api/Auth/"
+  public urlPost = "https://database.gopr-service.com.ua/api/ClientsDevices/"
+  public urlCheckUser = "https://database.gopr-service.com.ua/api/Clients/phone?phoneNumber="
+  public urlChangeStatus = "https://database.gopr-service.com.ua/api/Devices/"
+  public urlRequirePermissions = "https://database.gopr-service.com.ua/api/Admins/"  
+  public urlTokens = "https://database.gopr-service.com.ua/api/Tokens"
+  public urlGetToken = "https://database.gopr-service.com.ua/api/Tokens/"
   cache: Map<string, Observable<Client[]>> = new Map<string, Observable<Client[]>>();
   message: boolean = false;
   public token = new UserToken;
@@ -90,7 +90,7 @@ export class DataService {
   }
 
   getTokenByPhone(phoneNumber: string){
-    return this._http.get(this.urlGetToken + phoneNumber);
+    return this._http.get<UserToken>(this.urlGetToken + phoneNumber);
   }
 
   sendNotification(token: string, tech: string){

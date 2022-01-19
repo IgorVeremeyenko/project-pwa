@@ -1,42 +1,116 @@
-<mat-toolbar color="warn">
-  <section class="logo">
-    <mat-icon class="icons" style="height: 60px;width: 60px;" svgIcon="logo"></mat-icon>
-    <span style="padding-left: 0.5em;">GOPR-SERVICE</span>
-  </section>
-  <span class="lottie" *ngIf="isLoadingIcon">
-    <mat-icon class="icons" svgIcon="arrow-animated"></mat-icon>
-  </span>
-  <button mat-button (click)="home()">Home</button>
-  <button mat-button (click)="list()">List</button>
-  <button mat-button (click)="listForUser()">List for user</button>
-  <span matRipple style="cursor: pointer; border-radius: 32px;" matTooltip="Добавить клиента" (click)="addUser()">
-    <lord-icon
-    trigger="hover"
-    colors="primary:#000000,secondary:#000000"
-    src="../assets/svg/add-user.json"
-    style="height: 50px; width: 50px;"
-  ></lord-icon>  
-  </span>
-  <button mat-flat-button disabled (click)="Unlink()">Unlink</button>
-  <span class="spacer"></span>
-  <nav>
-    <button mat-button (click)="toggle()">Toggle Open/Close</button>
-  </nav>
-  <section class="buttons">
-    <button mat-icon-button >
-      <mat-icon matBadge="4" matBadgeOverlap="false"  (click)="goToNotifications()">notifications</mat-icon>
-    </button>    
-    <button *ngIf="!(isLogged | async)" (click)="auth()" matTooltip="Войти" mat-icon-button >
-      <mat-icon>login</mat-icon>
-    </button>
-    <button *ngIf="isLogged | async" (click)="logout()" matTooltip="Выйти" mat-icon-button >
-      <mat-icon>logout</mat-icon>
-    </button>
-  </section>
-</mat-toolbar>
-  
+<div *ngIf="matches; else elseBlock;" [ngClass]="{'alternate-theme': true, 'my-background-color': true, 'my-background-color-light': false}" [ngStyle]="{'color': 'white'}">
+  <mat-toolbar color="primary">
+    <section class="logo">
+      <mat-icon class="icons" style="height: 60px;width: 60px;" svgIcon="logo"></mat-icon>
+      <span style="padding-left: 0.5em;">GOPR-SERVICE</span>
+    </section>
+    <span class="lottie" *ngIf="isLoadingIcon">
+      <mat-icon class="icons" svgIcon="arrow-animated"></mat-icon>
+    </span>
+    <button mat-button (click)="home()">Home</button>
+    <button mat-button (click)="list()">List</button>
+    <button mat-button (click)="listForUser()">List for user</button>
+    <span matRipple style="cursor: pointer; border-radius: 32px;" matTooltip="Добавить клиента" (click)="addUser()">
+      <lord-icon
+      trigger="hover"
+      colors="primary:#000000,secondary:#000000"
+      src="../assets/svg/add-user.json"
+      style="height: 50px; width: 50px;"
+    ></lord-icon>  
+    </span>
+    <button mat-flat-button disabled (click)="Unlink()">Unlink</button>
+    <span class="spacer"></span>
+    <nav>
+      <button mat-button (click)="toggle()">Toggle Open/Close</button>
+    </nav>
+    <section class="buttons">
+      <button mat-icon-button >
+        <mat-icon matBadge="4" matBadgeOverlap="false"  (click)="goToNotifications()">notifications</mat-icon>
+      </button>    
+      <button *ngIf="!(isLogged | async)" (click)="auth()" matTooltip="Войти" mat-icon-button >
+        <mat-icon>login</mat-icon>
+      </button>
+      <button *ngIf="isLogged | async" (click)="logout()" matTooltip="Выйти" mat-icon-button >
+        <mat-icon>logout</mat-icon>
+      </button>
+    </section>
+  </mat-toolbar>
+</div>
 
-<div [@routeAnimations]="prepareRoute(outlet)">
+<ng-template #elseBlock [ngClass]="{'alternate-theme': true, 'my-background-color': true, 'my-background-color-light': false}" [ngStyle]="{'color': 'white'}">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport
+        [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+        [mode]="(isHandset$ | async) ? 'over' : 'side'"
+        [opened]="(isHandset$ | async) === false">
+      <mat-toolbar>Menu</mat-toolbar>
+      <mat-nav-list>
+        <a mat-list-item (click)="home()" (click)="drawer.toggle()">
+          Главная
+          <button mat-button (click)="home()"></button>
+        </a>
+        <a mat-list-item (click)="list()" (click)="drawer.toggle()">
+          Таблица
+          <button mat-button (click)="list()"></button>
+        </a>
+        <a mat-list-item (click)="listForUser()" (click)="drawer.toggle()">
+          Таблица для юзеров
+          <button mat-button (click)="listForUser()"></button>
+        </a>
+        <a mat-list-item (click)="goToNotifications()" (click)="drawer.toggle()">
+          Уведомления
+          <button mat-icon-button >
+            <mat-icon matBadge="4" matBadgeOverlap="false"  (click)="goToNotifications()">notifications</mat-icon>
+          </button> 
+        </a>
+        <a mat-list-item (click)="drawer.toggle()">          
+          <span matRipple style="cursor: pointer; border-radius: 32px;" matTooltip="Добавить клиента" (click)="addUser()">
+            Добавить клиента
+            <lord-icon
+            trigger="hover"
+            colors="primary:#000000,secondary:#000000"
+            src="../assets/svg/add-user.json"
+            style="height: 50px; width: 50px;"
+            ></lord-icon>  
+          </span>
+        </a>
+        <a mat-list-item >
+          <p *ngIf="!(isLogged | async)" >Войти</p>
+          <p *ngIf="isLogged | async" >Выйти</p>
+          <button *ngIf="!(isLogged | async)" (click)="auth()" (click)="drawer.toggle()" matTooltip="Войти" mat-icon-button >
+            <mat-icon>login</mat-icon>
+          </button>
+          <button *ngIf="isLogged | async" (click)="logout()" (click)="drawer.toggle()" matTooltip="Выйти" mat-icon-button >
+            <mat-icon>logout</mat-icon>
+          </button>
+        </a>
+        <a mat-list-item>
+          <button mat-flat-button disabled (click)="Unlink()">Unlink</button>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar color="primary">
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle()"
+          *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        <section class="logo">
+          <mat-icon class="icons" style="height: 60px;width: 60px;" svgIcon="logo"></mat-icon>
+          <span style="padding-left: 0.5em;">GOPR-SERVICE</span>
+        </section>
+      </mat-toolbar>
+      <!-- Add Content Here -->
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  
+</ng-template>
+
+<div [@routeAnimations]="prepareRoute(outlet)" >
   <router-outlet #outlet="outlet"></router-outlet>
 </div>
 

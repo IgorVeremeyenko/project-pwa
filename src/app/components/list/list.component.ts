@@ -121,8 +121,7 @@ export class ListComponent implements OnInit {
     this.matIconRegistry.addSvgIcon('arrow', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'circle arrow.svg'))
     this.matIconRegistry.addSvgIcon('arrow-animated', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'loader-dark.svg'))
   }
-ngOnInit() {    
-        
+ngOnInit() {
     this.clicked = true;
     this.sort.direction = 'desc'    
     // this.sortData(this.sort)    
@@ -141,7 +140,9 @@ ngOnInit() {
             this.dataService.token.phoneNumber = user.phoneNumber!;
             this.dataService.token.token = res;
             this.dataService.registerTokenForUser(this.dataService.token)
-            .subscribe(result => console.log('registar token: ', result))
+            .subscribe(result => {
+              console.log('registar token: ', result);
+            })
           })
         // ...
       } else {
@@ -168,6 +169,10 @@ ngOnInit() {
 
   onChangeAuth(event: boolean){
     this.logged.emit(event);
+  }
+  pushNotification(){
+    this.dataService.sendNotification("f93bMtEKjCZ6runquJP9kC:APA91bHatSGU_zm5YDCDBlWk2iJ9vXOmShB2mFK-1GWppBgMzfLnNZ2G6TcIQaWK-dFjVJAdLBL1OTH6zZQc2lglQ6kx134UpKniww2vKuafqkzxbUPEvMRTBV_2HuScJY7ioGDrdLg7", "push from site!")
+          .subscribe(t => console.log('send notification ', t), error => console.log('send notigication error ', error));
   }
 
   refreshTable(){

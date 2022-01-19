@@ -1,6 +1,7 @@
 importScripts('https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/7.6.0/firebase-messaging.js');
 
+
 // Your web app's Firebase configuration 
 const firebaseConfig = {
   apiKey: "AIzaSyAQyKGOGj6-WZD1IENAX1LynOz_GbERNw4",
@@ -14,13 +15,25 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const messaging = firebase.messaging();
+
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./firebase-messaging-sw.js')
     .then(function (registration) {
-      // console.log("Service Worker Registered");
+      //console.log("Service Worker Registered");
       messaging.useServiceWorker(registration);
+      
+      messaging.setBackgroundMessageHandler(function (payload) {
+      const notificationTitle = payload.data.title;
+      const notificationOptions = {
+        body: payload.data.body,
+        icon: payload.data.icon
+      };
+      return self.registration.showNotification(notificationTitle,
+        notificationOptions);
     });
+    });
+    
 }
+

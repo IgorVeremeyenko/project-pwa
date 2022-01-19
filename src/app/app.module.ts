@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -31,8 +31,19 @@ import { defineLordIconElement } from 'lord-icon-element';
 import lottie from 'lottie-web';
 import { IntroComponent } from './dialogs/intro/intro.component';
 import { ListForUserComponent } from './components/list-for-user/list-for-user.component';
+import { MainNavComponent } from './main-nav/main-nav.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { PromptComponent } from './prompt-component/prompt-component.component';
+import { PwaService } from './services/pwa.service';
 
 registerLocaleData(localeRu, 'ru');
+
+const initializer = (pwaService: PwaService) => () => pwaService.initPwaPrompt();
 
 export function playerFactory() {
   return player;
@@ -53,7 +64,9 @@ export function playerFactory() {
     LoginByPhoneComponent,
     AddClientComponent,
     IntroComponent,
-    ListForUserComponent
+    ListForUserComponent,
+    MainNavComponent,
+    PromptComponent
   ],
   imports: [
     TextMaskModule,
@@ -70,7 +83,13 @@ export function playerFactory() {
       registrationStrategy: 'registerImmediately'
     }),
     LottieModule.forRoot({ player: playerFactory }),
-    AuthModule
+    AuthModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
   ],
   providers: [
     {
@@ -78,7 +97,8 @@ export function playerFactory() {
       useClass: CorsInterceptor,
       multi: true,
     },
-    { provide: LOCALE_ID, useValue: 'ru' }
+    { provide: LOCALE_ID, useValue: 'ru' },
+    {provide: APP_INITIALIZER, useFactory: initializer, deps: [PwaService], multi: true},
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -8,6 +8,7 @@ import { HomeComponent } from '../../components/home/home.component';
 import { Client } from 'src/app/interfaces/client';
 import { DataService } from 'src/app/services/data.service';
 import { SureComponent } from '../sure/sure.component';
+import { UserToken } from 'src/app/interfaces/user-token';
 
 @Component({
   selector: 'app-details',
@@ -64,15 +65,16 @@ export class DetailsComponent implements OnInit {
         this.isLoading = !this.isLoading;
         const device = this.data.device
         device.status = true;
+        // поменять setstatustrue и sendNotifications местами
         this.dataService.setStatusTrue(this.data.device.id, device)
         .subscribe((result) => {
           console.log('fetched success ', result);
           this.isLoading = !this.isLoading;
           console.log('phone number from data ', this.phone)
           this.dataService.getTokenByPhone(this.phone)
-          .subscribe((t) => {
+          .subscribe((t: UserToken) => {                        
           console.log('token from base: ', t);
-          this.dataService.sendNotification(this.dataService.token.token!, this.data.device.deviceName)
+          this.dataService.sendNotification(t.token!, this.data.device.deviceName)
           .subscribe(t => console.log('send notification ', t), error => console.log('send notigication error ', error));
         }, error => console.log('phone from base ', error))
           this.dialogRef.close({data: 'fetched'});
