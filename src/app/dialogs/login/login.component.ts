@@ -140,6 +140,36 @@ export class LoginComponent implements OnInit {
       console.log('error', error)
     }
   }
+
+  signInFacebook(){
+    this.dialogRef.close()
+
+    signInWithPopup(this.auth, this.providerFacebook)
+    .then((result) => {
+      // The signed-in user info.
+      const user = result.user;
+      if (!user.phoneNumber) {
+        this.dialog.open(LoginByPhoneComponent, { disableClose: true, data: this.auth.currentUser })
+      }
+      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+      const credential = FacebookAuthProvider.credentialFromResult(result);
+      const accessToken = credential!.accessToken;
+      this.router.navigateByUrl('');
+      // ...
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const email = error.email;
+      // The AuthCredential type that was used.
+      const credential = FacebookAuthProvider.credentialFromError(error);
+
+      // ...
+    });
+  }
+
   signInGoogle() {
     this.dialogRef.close()
     

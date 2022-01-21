@@ -126,42 +126,48 @@ ngOnInit() {
     this.sort.direction = 'desc'    
     // this.sortData(this.sort)    
     const currentUser = this.dataService.checkAuth();
-    console.log(currentUser)
-    onAuthStateChanged(currentUser!, async (user) => {
-      if (user) {    
-        this.dataService.change(true);    
-        this.mainFunction.onChanged(true);  
-        this.isLoadingIcon = false;
-        const phone = user.phoneNumber
-        this.requirePermissions(phone!, user);
-          //регистрация токена устройства
-          const token = this.messages.token.then(res => {
-            console.log(res);
-            this.dataService.token.phoneNumber = user.phoneNumber!;
-            this.dataService.token.token = res;
-            this.dataService.registerTokenForUser(this.dataService.token)
-            .subscribe(result => {
-              console.log('registar token: ', result);
-            })
-          })
-        // ...
-      } else {
-        this.dataService.change(false);  
-        this.mainFunction.onChanged(false); 
-        this.dataService.message = false;
-        // this.isLogged = this.data.message;
-        // this.loading$ = false;
-        this.promiseLoadingRun.next(false);
-        setInterval(() => {
+    console.log('current user ',currentUser)
+    if(currentUser?.currentUser == null){
+      this.router.navigateByUrl('authorization');
+    }
+    else {
+
+      onAuthStateChanged(currentUser!, async (user) => {
+        if (user) {    
+          this.dataService.change(true);    
+          this.mainFunction.onChanged(true);  
           this.isLoadingIcon = false;
-          this.isPageLoaded = true;
-          this.router.navigateByUrl('authorization');
-        }, 3000)
-        // User is signed out
-        // this.isLogged = false;
-        // this.message = "Вы не авторизованы"
-      }
-    });
+          const phone = user.phoneNumber
+          this.requirePermissions(phone!, user);
+            //регистрация токена устройства
+            const token = this.messages.token.then(res => {
+              console.log(res);
+              this.dataService.token.phoneNumber = user.phoneNumber!;
+              this.dataService.token.token = res;
+              this.dataService.registerTokenForUser(this.dataService.token)
+              .subscribe(result => {
+                console.log('registar token: ', result);
+              })
+            })
+          // ...
+        } else {
+          this.dataService.change(false);  
+          this.mainFunction.onChanged(false); 
+          this.dataService.message = false;
+          // this.isLogged = this.data.message;
+          // this.loading$ = false;
+          this.promiseLoadingRun.next(false);
+          setInterval(() => {
+            this.isLoadingIcon = false;
+            this.isPageLoaded = true;
+            //this.router.navigateByUrl('authorization');
+          }, 3000)
+          // User is signed out
+          // this.isLogged = false;
+          // this.message = "Вы не авторизованы"
+        }
+      });
+    }
 
   //this.getUsers();
     
