@@ -1,4 +1,4 @@
-<div *ngIf="matches; else elseBlock;" [ngClass]="{'alternate-theme': true, 'my-background-color': true, 'my-background-color-light': false}" [ngStyle]="{'color': 'white'}">
+<div *ngIf="matches; else elseBlock;" [ngClass]="{'alternate-theme': true, 'my-background-color': true, 'my-background-color-light': false}">
   <mat-toolbar color="primary">
     <section class="logo">
       <mat-icon class="icons" style="height: 60px;width: 60px;" svgIcon="logo"></mat-icon>
@@ -25,7 +25,7 @@
     </nav>
     <section class="buttons">
       <button mat-icon-button >
-        <mat-icon matBadge="4" matBadgeOverlap="false"  (click)="goToNotifications()">notifications</mat-icon>
+        <mat-icon [matBadge]="messagesCount" matBadgeOverlap="false"  (click)="goToNotifications()">notifications</mat-icon>
       </button>    
       <button *ngIf="!(isLogged | async)" (click)="auth()" matTooltip="Войти" mat-icon-button >
         <mat-icon>login</mat-icon>
@@ -37,7 +37,7 @@
   </mat-toolbar>
 </div>
 
-<ng-template #elseBlock [ngClass]="{'alternate-theme': true, 'my-background-color': true, 'my-background-color-light': false}" [ngStyle]="{'color': 'white'}">
+<ng-template #elseBlock [ngClass]="{'alternate-theme': true, 'my-background-color': true, 'my-background-color-light': false}">
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #drawer class="sidenav" fixedInViewport
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"

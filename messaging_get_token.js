@@ -3,7 +3,7 @@ import { getMessaging, getToken } from "firebase/messaging";
 // Get registration token. Initially this makes a network call, once retrieved
 // subsequent calls to getToken will return from cache.
 const messaging = getMessaging();
-getToken(messaging, { vapidKey: 'BFXi_Wczk-SJrJ5Os4zs-UDXVXbdaPInEa0tXcUtRisuA1UCJaGbBRd3B05qWFUD9OUJj7kw19A-aAj1phd8U74' }).then((currentToken) => {
+getToken(messaging, { vapidKey: 'BF7WaWQnJwo8dE8zTNStw4kxl6Gq8S3N9j3V2BbIYC_G79h75GyItp7VLZ7V7lT3pQ4Tu3hM9c_aN15EdwPBsqM' }).then((currentToken) => {
   if (currentToken) {
     // Send the token to your server and update the UI if necessary
     // ...

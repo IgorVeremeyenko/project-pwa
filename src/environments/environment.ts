@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   firebaseConfig: {
     apiKey: "AIzaSyAQyKGOGj6-WZD1IENAX1LynOz_GbERNw4",
-    authDomain: "elite-service-92d53.firebaseapp.com",
+    authDomain: "workshop.gopr-service.com.ua",
     databaseURL: "https://elite-service-92d53-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "elite-service-92d53",
     storageBucket: "elite-service-92d53.appspot.com",

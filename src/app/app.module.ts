@@ -15,7 +15,7 @@ import { LoginComponent } from './dialogs/login/login.component';
 import { LogoutComponent } from './dialogs/logout/logout.component';
 import { LottieModule } from 'ngx-lottie';
 import player from 'lottie-web';
-import { registerLocaleData } from '@angular/common';
+import { AsyncPipe, registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import { DetailsComponent } from './dialogs/details/details.component';
 import { ListComponent } from './components/list/list.component';
@@ -40,6 +40,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { PromptComponent } from './prompt-component/prompt-component.component';
 import { PwaService } from './services/pwa.service';
+import { MessagingService } from './services/messaging.service';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -99,6 +100,7 @@ export function playerFactory() {
     },
     { provide: LOCALE_ID, useValue: 'ru' },
     {provide: APP_INITIALIZER, useFactory: initializer, deps: [PwaService], multi: true},
+    MessagingService,AsyncPipe
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

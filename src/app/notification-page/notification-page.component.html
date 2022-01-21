@@ -1,6 +1,9 @@
-<div class="main-container">
+<!-- <div *ngIf="message; else elseBlock" class="main-container">
     <p>Пока что нет уведомлений</p>
     <div class="image">
         <img src="../../assets/img/notification.jpg">
     </div>
+</div> -->
+<div>
+    {{ message | async | json }}
 </div>

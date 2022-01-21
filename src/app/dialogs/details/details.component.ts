@@ -85,8 +85,6 @@ export class DetailsComponent implements OnInit {
           this.openSnackBar("Не удалось отправить уведомление", this.configSnackBar);
           this.dialogRef.close({data: 'notFetched'})
         });
-        
-
       }
       else {
         return;

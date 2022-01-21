@@ -29,6 +29,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   isOpen = true;
   matches: boolean = false;
   private pathSvg: string = "./assets/svg/";
+  public messagesCount = 0;
   path!: any;
   isLogged = new BehaviorSubject<boolean>(false);
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
