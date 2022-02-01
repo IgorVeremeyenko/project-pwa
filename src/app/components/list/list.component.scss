@@ -7,6 +7,10 @@
   width: 100%;
   overflow: auto;
 }
+.lord-icon{
+  height: 500px;
+  width: 500px;
+}
 .main-container {
   display: flex;
   justify-content: center;
@@ -15,7 +19,7 @@
   border-collapse: collapse !important;
   margin: 25px 10px 10px !important;
   font-size: 1.9em !important;
-  min-width: 400px !important;
+  // min-width: 400px !important;
   box-shadow: 8px 6px 20px 0px rgb(0 0 0 / 79%) !important;
   border-radius: 5px;
   
@@ -185,8 +189,10 @@
   }
   #div-table {
     border-radius: 8px;
-    overflow:hidden !important;
+    overflow: unset;
   }
+  
+  
   .mat-cell {
     margin: 0;
   text-align: left;
@@ -231,6 +237,9 @@ background-color: #000000d1;
 }
 #phone-header{
   flex: 1 0 3%;
+}
+.lord-icon{
+  height: 23vh;
 }
 
 }

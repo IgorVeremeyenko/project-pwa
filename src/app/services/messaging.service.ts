@@ -6,13 +6,12 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class MessagingService {
-  
-  
+    
   currentMessage = new BehaviorSubject({});
   constructor() {
     onMessage(this.messaging, (payload) => {
       console.log('Message received. ', payload);
-      this.currentMessage.next(payload)          
+      this.currentMessage.next(payload);      
       });
   }
   messaging = getMessaging();
@@ -36,8 +35,5 @@ export class MessagingService {
     return undefined;
   });
    
-    
-  
-
   
 }

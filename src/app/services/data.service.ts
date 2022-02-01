@@ -10,6 +10,7 @@ import { Client } from '../interfaces/client';
 import { Device } from '../interfaces/device';
 import * as CryptoJS from "crypto-js"
 import { UserToken } from '../interfaces/user-token';
+import { Notification } from '../interfaces/notification';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class DataService {
   public urlRequirePermissions = "https://database.gopr-service.com.ua/api/Admins/"  
   public urlTokens = "https://database.gopr-service.com.ua/api/Tokens"
   public urlGetToken = "https://database.gopr-service.com.ua/api/Tokens/"
+  public urlNotifications = "https://database.gopr-service.com.ua/api/Notifications/"
   cache: Map<string, Observable<Client[]>> = new Map<string, Observable<Client[]>>();
   message: boolean = false;
   public token = new UserToken;
@@ -122,5 +124,8 @@ export class DataService {
     return this._http.post<Client[]>(this.urlPost, newClient);
   }
   
+  addNotificationToDataBase(message: Notification){
+    return this._http.post(this.urlNotifications, message);
+  }
 
 }

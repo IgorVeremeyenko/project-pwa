@@ -122,52 +122,48 @@ export class ListComponent implements OnInit {
     this.matIconRegistry.addSvgIcon('arrow-animated', this.domSanitizer.bypassSecurityTrustResourceUrl(this.path + 'loader-dark.svg'))
   }
 ngOnInit() {
-    this.clicked = true;
-    this.sort.direction = 'desc'    
-    // this.sortData(this.sort)    
-    const currentUser = this.dataService.checkAuth();
-    console.log('current user ',currentUser)
-    if(currentUser?.currentUser == null){
-      this.router.navigateByUrl('authorization');
+  this.clicked = true;
+  this.sort.direction = 'desc'    
+  // this.sortData(this.sort)    
+  let currentUser = this.dataService.checkAuth();
+  console.log('current user ',currentUser)    
+  if(!currentUser) currentUser = this.dataService.checkAuth();
+  onAuthStateChanged(currentUser!, async (user) => {
+    if (user) {    
+      this.dataService.change(true);    
+      this.mainFunction.onChanged(true);  
+      this.isLoadingIcon = false;
+      const phone = user.phoneNumber
+      this.requirePermissions(phone!, user);
+        //регистрация токена устройства
+        const token = this.messages.token.then(res => {
+          console.log('res token',res);
+          this.dataService.token.phoneNumber = user.phoneNumber!;
+          this.dataService.token.token = res;
+          this.dataService.registerTokenForUser(this.dataService.token)
+          .subscribe(result => {
+            console.log('registar token: ', result);
+          })
+        })
+      // ...
+    } else {
+      this.dataService.change(false);  
+      this.mainFunction.onChanged(false); 
+      this.dataService.message = false;
+      // this.isLogged = this.data.message;
+      // this.loading$ = false;
+      this.promiseLoadingRun.next(false);
+      setInterval(() => {
+        this.isLoadingIcon = false;
+        this.isPageLoaded = true;
+        this.router.navigateByUrl('authorization');
+      }, 3000)
+      // User is signed out
+      // this.isLogged = false;
+      // this.message = "Вы не авторизованы"
     }
-    else {
-
-      onAuthStateChanged(currentUser!, async (user) => {
-        if (user) {    
-          this.dataService.change(true);    
-          this.mainFunction.onChanged(true);  
-          this.isLoadingIcon = false;
-          const phone = user.phoneNumber
-          this.requirePermissions(phone!, user);
-            //регистрация токена устройства
-            const token = this.messages.token.then(res => {
-              console.log(res);
-              this.dataService.token.phoneNumber = user.phoneNumber!;
-              this.dataService.token.token = res;
-              this.dataService.registerTokenForUser(this.dataService.token)
-              .subscribe(result => {
-                console.log('registar token: ', result);
-              })
-            })
-          // ...
-        } else {
-          this.dataService.change(false);  
-          this.mainFunction.onChanged(false); 
-          this.dataService.message = false;
-          // this.isLogged = this.data.message;
-          // this.loading$ = false;
-          this.promiseLoadingRun.next(false);
-          setInterval(() => {
-            this.isLoadingIcon = false;
-            this.isPageLoaded = true;
-            //this.router.navigateByUrl('authorization');
-          }, 3000)
-          // User is signed out
-          // this.isLogged = false;
-          // this.message = "Вы не авторизованы"
-        }
-      });
-    }
+  });
+    
 
   //this.getUsers();
     

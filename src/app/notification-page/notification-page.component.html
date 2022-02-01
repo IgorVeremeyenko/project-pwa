@@ -4,6 +4,12 @@
         <img src="../../assets/img/notification.jpg">
     </div>
 </div> -->
-<div>
-    {{ message | async | json }}
+<div class="notif" *ngIf="!show ; else elseBlock">
+    <p>Пока что нет уведомлений</p>
+    <div class="image">
+        <img src="../../assets/img/notification.jpg">
+    </div>
 </div>
+<ng-template #elseBlock>      
+    {{ message | async | json }}
+</ng-template>

@@ -25,7 +25,7 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  title = 'project-pwa';
+  title = 'GOPR-SERVICE';
   isOpen = true;
   matches: boolean = false;
   private pathSvg: string = "./assets/svg/";
@@ -97,7 +97,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     unlink(auth!.currentUser!, provId).then(() => {
       this.router.navigateByUrl('devices');
     }).catch((error) => {
-      console.log(error)
+      console.log('error devices',error)
     });
   }
 
@@ -119,7 +119,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     const user = this.authService.checkAuth();
     if (user != null) {
       // this.isLogged.next(true);
-      console.log(this.isLogged)
+      console.log('user is logged',this.isLogged)
       // this.isLogged = true;
       this.isLoadingIcon = false;
     }
