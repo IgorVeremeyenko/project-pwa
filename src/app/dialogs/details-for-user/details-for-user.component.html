@@ -1,0 +1,39 @@
+<h1 mat-dialog-title style="width: 400px;">
+  
+    <span  ><a matTooltip="Вызвать" class="phone" mat-button [href]="'tel:'+ data.client.phoneNumber"><mat-icon>phone_iphone</mat-icon> {{data.client.phoneNumber}}</a> </span>
+    <button mat-icon-button [cdkCopyToClipboard]="value" matTooltip="Скопировать" (click)="clipboard()"><mat-icon>content_copy</mat-icon></button>
+    <button mat-icon-button class="close-icon" (click)="onNoClick()">
+      <mat-icon>close</mat-icon>
+    </button>
+  
+  </h1>
+  <mat-dialog-content>
+    <mat-label class="register"> <small style="display: grid;grid-template-columns: 30px 1fr;">
+        <mat-icon class="calendar">
+          event_note
+        </mat-icon>Зарегистрировано:
+      </small></mat-label>
+    {{data.device.dateToAdd | date: 'd.MM.yyyy, hh:mm'}}
+    <mat-label class="person">
+      <small>Персона:</small>
+    </mat-label>
+    {{data.client.name}}
+    <div class="detail">
+      <mat-label> <small>Устройство:</small></mat-label>
+      {{data.device.deviceName}}
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-footer>
+    <mat-divider></mat-divider>
+    <mat-label class="status"> <small>Состояние ремонта:</small></mat-label>
+    <div class="status-label">
+      <div style="display: flex;
+      align-items: center;
+      column-gap: 10px;">
+        <mat-icon *ngIf="!data.device.status" color="warn">settings_suggest</mat-icon>
+        <mat-icon *ngIf="data.device.status" color="accent">verified</mat-icon>
+        {{data.device.status | readyNo: data.device.dateToReturn}}
+      </div>
+      
+    </div>
+  </mat-dialog-footer>

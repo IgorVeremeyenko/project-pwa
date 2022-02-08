@@ -8,6 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { getMessaging, getToken } from 'firebase/messaging';
 import { BehaviorSubject } from 'rxjs';
 import { AppComponent } from 'src/app/app.component';
+import { DetailsForUserComponent } from 'src/app/dialogs/details-for-user/details-for-user.component';
 import { DetailsComponent } from 'src/app/dialogs/details/details.component';
 import { Client } from 'src/app/interfaces/client';
 import { Device } from 'src/app/interfaces/device';
@@ -126,7 +127,7 @@ export class ListForUserComponent implements OnInit {
   getRecord(value: any){
     this.detailsService.addItem(value);
     // this.router.navigate(['details']);
-    const dialogref = this.dialog.open(DetailsComponent, {
+    const dialogref = this.dialog.open(DetailsForUserComponent, {
       data: value,
       restoreFocus: true
     })

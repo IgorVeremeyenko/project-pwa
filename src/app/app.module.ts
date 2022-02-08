@@ -41,6 +41,7 @@ import { MatListModule } from '@angular/material/list';
 import { PromptComponent } from './prompt-component/prompt-component.component';
 import { PwaService } from './services/pwa.service';
 import { MessagingService } from './services/messaging.service';
+import { DetailsForUserComponent } from './dialogs/details-for-user/details-for-user.component';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -67,7 +68,8 @@ export function playerFactory() {
     IntroComponent,
     ListForUserComponent,
     MainNavComponent,
-    PromptComponent
+    PromptComponent,
+    DetailsForUserComponent
   ],
   imports: [
     TextMaskModule,
