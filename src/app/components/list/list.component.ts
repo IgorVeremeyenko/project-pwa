@@ -317,20 +317,23 @@ ngOnInit() {
 
   //   console.log(data)   
   // }
-
   applyFilter(event: Event) {
-        
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filterPredicate = (data: Client, filter: string) => {
-      return data.client.name.toLocaleLowerCase().includes(filter) ||
-      data.client.email.toLocaleLowerCase().includes(filter) ||
-      data.client.phoneNumber.toLocaleLowerCase().includes(filter) ||
-      data.device.deviceName.toLocaleLowerCase().includes(filter);
-
-    };
     this.dataSource.filter = filterValue.trim().toLowerCase();
-    
   }
+  // applyFilter(event: Event) {
+        
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filterPredicate = (data: Client, filter: string) => {
+  //     return data.client.name.toLocaleLowerCase().includes(filter) ||
+  //     data.client.email.toLocaleLowerCase().includes(filter) ||
+  //     data.client.phoneNumber.toLocaleLowerCase().includes(filter) ||
+  //     data.device.deviceName.toLocaleLowerCase().includes(filter);
+
+  //   };
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
+    
+  // }
 
 
   sortData(sort: Sort) {

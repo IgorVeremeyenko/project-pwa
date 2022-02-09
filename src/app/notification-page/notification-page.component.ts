@@ -12,14 +12,7 @@ export class NotificationPageComponent implements OnInit {
 
   message: any;
   show: boolean = false;
-  msgObject: Notification = {
-    id: 0,
-    phoneNumber: '',
-    date: new Date,
-    title: '',
-    body: '',
-    img: ''
-  }
+  currentDate!: Date;
 
   data: Notification[] = [];
 
@@ -29,11 +22,8 @@ export class NotificationPageComponent implements OnInit {
     this.message = this.messagingService.currentMessage;
     if(Object.keys(this.message.value).length > 0){
       this.show = true;
-      this.msgObject = this.message;
-      const user = this.dataService.checkAuth();
-      const number = user?.currentUser?.phoneNumber;
-      this.msgObject.phoneNumber = number!;
-      this.dataService.addNotificationToDataBase(this.msgObject);
+      this.currentDate = new Date;
+      console.log('msgobject : ', this.message)
     }
     
   }

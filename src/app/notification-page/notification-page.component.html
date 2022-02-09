@@ -10,6 +10,19 @@
         <img src="../../assets/img/notification.jpg">
     </div>
 </div>
-<ng-template #elseBlock>      
-    {{ message | async | json }}
+<ng-template #elseBlock>          
+      <div>
+        <mat-list>
+            <div mat-subheader>Уведомления</div>
+            <mat-list-item disableRipple="false">
+              <mat-icon mat-list-icon>question_answer</mat-icon>
+              <div mat-line>{{message.value.notification.title}}</div>
+              <div mat-line>{{message.value.notification.body}}</div>
+              <div mat-line> {{currentDate | date: 'd MMMM y, HH:mm'}} </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>            
+          </mat-list>        
+      </div>
+      
+      
 </ng-template>
