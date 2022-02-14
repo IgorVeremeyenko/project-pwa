@@ -10,7 +10,7 @@ import { Client } from '../interfaces/client';
 import { Device } from '../interfaces/device';
 import * as CryptoJS from "crypto-js"
 import { UserToken } from '../interfaces/user-token';
-import { Notification } from '../interfaces/notification';
+import { Notifications } from '../interfaces/notification';
 
 @Injectable({
   providedIn: 'root'
@@ -124,8 +124,12 @@ export class DataService {
     return this._http.post<Client[]>(this.urlPost, newClient);
   }
   
-  addNotificationToDataBase(message: Notification){
+  addNotificationToDataBase(message: Notifications){
     return this._http.post(this.urlNotifications, message);
+  }
+
+  readNotificationsFromDB(){
+    return this._http.get<Notifications>(this.urlNotifications);
   }
 
 }

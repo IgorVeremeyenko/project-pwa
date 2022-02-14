@@ -19,6 +19,7 @@ import { UserToken } from 'src/app/interfaces/user-token';
 export class DetailsComponent implements OnInit {
 
   ELEMENT_DATA!: Client;
+  clientID!: number;
   displayedColumns: string[] = ['created', 'phone', 'device', 'name', 'status', 'email'];
   dataSource = this.ELEMENT_DATA;
   public isLoading!: boolean;
@@ -43,7 +44,6 @@ export class DetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.phone = this.data.client.phoneNumber;
-    console.log(this.phone)
     this.ELEMENT_DATA = this.data;
     this.dataSource = this.ELEMENT_DATA
     this.value = this.data.client.phoneNumber
@@ -72,10 +72,8 @@ export class DetailsComponent implements OnInit {
           this.isLoading = !this.isLoading;
           console.log('phone number from data ', this.phone)
           this.dataService.getTokenByPhone(this.phone)
-          .subscribe((t: UserToken) => {                        
-          console.log('token from base: ', t);
-          this.dataService.sendNotification(t.token!, this.data.device.deviceName)
-          .subscribe(t => console.log('send notification ', t), error => console.log('send notigication error ', error));
+          .subscribe((t: UserToken) => {      
+          this.dataService.sendNotification(t.token!, this.data.device.deviceName);
         }, error => console.log('phone from base ', error))
           this.dialogRef.close({data: 'fetched'});
         }, error => {

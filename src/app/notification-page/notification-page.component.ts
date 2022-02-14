@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Notification } from '../interfaces/notification';
+import { map } from 'rxjs';
+import { Notifications } from '../interfaces/notification';
 import { DataService } from '../services/data.service';
 import { MessagingService } from '../services/messaging.service';
 
@@ -14,18 +15,35 @@ export class NotificationPageComponent implements OnInit {
   show: boolean = false;
   currentDate!: Date;
 
-  data: Notification[] = [];
+  data: Notifications[] = [];
 
   constructor(private messagingService: MessagingService, private dataService: DataService) { }
 
   ngOnInit(): void {
+    this.currentDate = new Date;
+    
+    this.dataService.readNotificationsFromDB().subscribe(() => {
+      map((item: Notifications) => {
+        if(this.dateDifference(item.dateToAdd, this.currentDate) > 1){
+          item.isRead = false;
+        }
+        this.data.push(item);
+      })
+    })
+    if(this.data.length == 0){
+      this.show = false;
+    }
+    else {
+      this.show = true;
+    }
     this.message = this.messagingService.currentMessage;
     if(Object.keys(this.message.value).length > 0){
-      this.show = true;
-      this.currentDate = new Date;
       console.log('msgobject : ', this.message)
-    }
-    
+    }    
+  }
+
+  dateDifference(start: Date, end: Date){
+    return (end.getDate() - start.getDate());
   }
 
 }

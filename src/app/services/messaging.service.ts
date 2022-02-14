@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { BehaviorSubject } from 'rxjs';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,13 +9,15 @@ import { BehaviorSubject } from 'rxjs';
 export class MessagingService {
     
   currentMessage = new BehaviorSubject({});
-  constructor() {
+
+  constructor(private dataService: DataService) {
     onMessage(this.messaging, (payload) => {
       console.log('Message received. ', payload);
       this.currentMessage.next(payload);      
       });
   }
   messaging = getMessaging();
+  
   token = getToken(this.messaging, { vapidKey: 'BFXi_Wczk-SJrJ5Os4zs-UDXVXbdaPInEa0tXcUtRisuA1UCJaGbBRd3B05qWFUD9OUJj7kw19A-aAj1phd8U74' })
   .then((currentToken) => {
     

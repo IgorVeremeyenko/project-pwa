@@ -1,9 +1,9 @@
 {
-  "name": "project-pwa",
-  "short_name": "project-pwa",
+  "name": "GOPR-SERVICE",
+  "short_name": "GOPR-SERVICE",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
-  "display": "standalone",
+  "display": "minimal-ui",
   "scope": "./",
   "start_url": "./",
   "icons": [

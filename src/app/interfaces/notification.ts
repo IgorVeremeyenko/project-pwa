@@ -1,8 +1,7 @@
-export interface Notification {
+export interface Notifications {
     id: number,
-    phoneNumber: string,
-    date: Date,
+    dateToAdd: Date,
     title: string,
     body: string,
-    img: string,
+    isRead: boolean
 }

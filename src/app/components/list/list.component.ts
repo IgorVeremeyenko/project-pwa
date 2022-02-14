@@ -137,35 +137,24 @@ ngOnInit() {
       this.requirePermissions(phone!, user);
         //регистрация токена устройства
         const token = this.messages.token.then(res => {
-          console.log('res token',res);
           this.dataService.token.phoneNumber = user.phoneNumber!;
           this.dataService.token.token = res;
-          this.dataService.registerTokenForUser(this.dataService.token)
-          .subscribe(result => {
-            console.log('registar token: ', result);
-          })
+          this.dataService.registerTokenForUser(this.dataService.token);
         })
       // ...
     } else {
       this.dataService.change(false);  
       this.mainFunction.onChanged(false); 
       this.dataService.message = false;
-      // this.isLogged = this.data.message;
-      // this.loading$ = false;
       this.promiseLoadingRun.next(false);
       setInterval(() => {
         this.isLoadingIcon = false;
         this.isPageLoaded = true;
         this.router.navigateByUrl('authorization');
       }, 3000)
-      // User is signed out
-      // this.isLogged = false;
-      // this.message = "Вы не авторизованы"
     }
   });
     
-
-  //this.getUsers();
     
   }
 
@@ -231,21 +220,8 @@ ngOnInit() {
 
   ngAfterViewInit() {
     this.dataSource = new MatTableDataSource(this.sortedData);
-    // this.dataSource.paginator = this.paginator;
   }
-  // costumPaginator(){
-  //   const customPaginatorIntl = new MatPaginatorIntl();
-
-  //   customPaginatorIntl.itemsPerPageLabel = 'Custom_Label:';
-
-  //   return customPaginatorIntl;
-  // }
-
-
-  // onPaginateChange(){
-  //   this.dataSource.paginator = this.paginator;
-  // }
-
+  
   update(admin: boolean, phone: string) {
     this.clicked = true;
     // this.loading$ = true;
