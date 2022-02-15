@@ -25,7 +25,7 @@
     </nav>
     <section class="buttons">
       <button mat-icon-button >
-        <mat-icon [matBadge]="messagesCount" matBadgeOverlap="false"  (click)="goToNotifications()">notifications</mat-icon>
+        <mat-icon [matBadge]="messagesCount > 0 ? messagesCount : ''" matBadgeOverlap="false"  (click)="goToNotifications()">notifications</mat-icon>
       </button>    
       <button *ngIf="!(isLogged | async)" (click)="auth()" matTooltip="Войти" mat-icon-button >
         <mat-icon>login</mat-icon>

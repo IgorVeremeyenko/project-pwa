@@ -9,8 +9,6 @@
     <span *ngIf="alertMessage != ''" style="text-align: center;">
       <h2>{{alertMessage}}</h2>
     </span> 
-    <button mat-icon-button (click)="refreshTable()"><mat-icon>refresh</mat-icon></button>
-    <button mat-icon-button (click)="pushNotification()"><mat-icon>Push notification</mat-icon></button>
     <ng-template #elseBlock>
 
       <div id="div-table" *ngIf="alertMessage == ''" class="example-container" mat-elevation-z8>
