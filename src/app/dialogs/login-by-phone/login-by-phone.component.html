@@ -1,0 +1,35 @@
+<form class="login-form" [formGroup]="form" (ngSubmit)="submit($event)">
+    <div *ngIf="!OTP_Window" class="signin-btn">
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Номер телефона</mat-label>
+        <span matPrefix>+38 &nbsp;</span>
+        <input type="text" name="phone" formControlName="mobileNumber" matInput placeholder="(555)-555-12-34"
+          class="form-control" [textMask]="{mask: phoneMask}" required>
+        <mat-hint *ngIf="f.valid">✓</mat-hint>
+        <mat-error *ngIf="f.hasError('pattern') && f.touched" style="margin-bottom: 1.25em">
+          Для продолжения номер <strong>обязательный</strong>. Или попробуйте войти с помощью кнопок ниже
+        </mat-error>
+        <mat-icon matSuffix>mode_edit</mat-icon>
+      </mat-form-field>
+      <button mat-raised-button [disabled]="form.invalid" [formAction]="submit" class="enter"
+        color="primary">Войти</button>
+    </div>
+    <div id="recaptcha-container"></div>
+    <div *ngIf="OTP_Window" class="otp" style="text-align: center;">
+      <div *ngIf="isLoading; else elseBlock" class="otpDiv">
+        <h3>{{message}}</h3>
+        <ng-otp-input (onInputChange)="onOtpChange($event)" [config]="{
+                    length:6, 
+                    allowNumbersOnly: true,
+                    inputStyles: {
+                        'border': 'solid 1px #ff5c00',
+                        'box-shadow': '5px 5px 5px #6262629c'
+                    }
+                }"></ng-otp-input>
+      </div>
+      <ng-template #elseBlock class="loading">
+        <h3>{{message}}</h3>
+        <mat-progress-bar mode="query"></mat-progress-bar>
+      </ng-template>
+    </div>
+  </form>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { LoginComponent } from '../dialogs/login/login.component';
 
 @Component({
@@ -9,7 +10,10 @@ import { LoginComponent } from '../dialogs/login/login.component';
 })
 export class AuthComponent implements OnInit {
 
-  constructor(public dialog: MatDialog) { }
+  path!: any;
+  constructor(public dialog: MatDialog, private readonly router: Router) {
+    this.path = this.router.getCurrentNavigation()?.extras.state
+   }
 
   ngOnInit(): void {
     this.openDialog()
@@ -17,9 +21,8 @@ export class AuthComponent implements OnInit {
 
   openDialog() {
     this.dialog.open(LoginComponent, {
-      data: {
-        animal: 'panda',
-      },
+      
+      disableClose: true
     });
   }
 }

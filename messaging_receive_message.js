@@ -21,8 +21,8 @@ onBackgroundMessage(messaging, (payload) => {
     icon: './assets/icon-72x72.png'
   };
 
-  // self.registration.showNotification(notificationTitle,
-  //   notificationOptions);
+   self.registration.showNotification(notificationTitle,
+   notificationOptions);
 });
 onMessage(messaging, (payload) => {
   console.log('Message received. ', payload);

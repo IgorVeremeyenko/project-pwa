@@ -1,0 +1,151 @@
+@import "~@angular/material/theming";
+
+@include mat-core();
+
+$my-primary-color: (
+  100: #892592,
+  300: #B066C4,
+  700: #7B1B99,
+  contrast: (
+    100: #ffffff,
+    300: #D283E7,
+    700: #B13DD4,
+  ),
+);
+
+$my-accent-color: (
+  100: #7c6060,
+  300: #FFBD4D,
+  700: #FF8E00,
+  contrast: (
+    100: #835a14,
+    300: #FFDA4D,
+    700: #FFBD00,
+  ),
+);
+
+$my-warn-color: (
+  100: #F0B3B3,
+  300: #DB4D4D,
+  700: #C00000,
+  contrast: (
+    100: #FDBABA,
+    300: #F95E5E,
+    700: #F51212,
+  ),
+);
+
+$my-palette-primary: mat-palette($my-primary-color, 100,300,700);
+$my-palette-accent: mat-palette($mat-light-blue);
+$my-palette-warn: mat-palette($mat-deep-orange, A200);
+
+$my-theme: mat-light-theme(
+  (
+    color: (
+      primary: $my-palette-primary,
+      accent: $my-palette-accent,
+      warn: $my-palette-warn,
+    ),
+  )
+);
+
+@include angular-material-theme($my-theme);
+
+.alternate-theme {
+  $my-dark-primary-color: (
+    100: #006873,   
+    300: #E91E63,   
+    700: #E91E63,    
+    contrast: (
+      100: #ffffff,
+      300: #ffffff,
+      700: #ffffff,
+    ),
+  );
+
+  $my-dark-accent-color: (
+    100: #69F0AE,
+    300: #9C8179,
+    700: #6E4E45,
+    contrast: (
+      100: #1D4832,
+      300: #2f2725,
+      700: #d3cac7,
+    ),
+  );
+
+  $my-dark-warn-color: (
+    100: #F44336,
+    300: #d30cc9b4,
+    700: #ffffff,
+    contrast: (
+      100: #ffffff,
+      300: #00b800,
+      700: #0de617,
+    ),
+  );  
+
+  $alternate-primary: mat-palette($my-dark-primary-color, 100, 300, 700);
+  $alternate-accent: mat-palette($my-dark-accent-color, 100, 300, 700);
+  $alternate-warn: mat-palette($my-dark-warn-color, 100, 300, 700);
+  // $alternate-theme: mat-dark-theme($alternate-primary, $alternate-accent, $alternate-warn);
+ 
+  $alternate-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $alternate-primary,
+      accent: $alternate-accent,
+      warn: $alternate-warn,
+    ),
+  )
+);
+  @include angular-material-theme($alternate-theme);
+}
+
+@mixin mix-app-theme($my-theme) {
+
+    $primary: map-get($my-theme, primary);
+    $accent: map-get($my-theme, accent);
+    $warn: map-get($my-theme, warn );
+    $primary-dark-alt: map-get($my-theme, primary);
+    $primary-accent-alt: map-get($my-theme, accent);
+    $primary-warn-alt: map-get($my-theme, warn);
+
+    .mat-button-toggle {
+      background-color: mat-color($primary);
+      color: mat-color($accent, default);
+    }
+  
+    .mat-button-toggle-checked {
+      background-color: mat-color($primary);
+      color: mat-color($accent);
+    }
+    .my-background-color{
+        background-color: #303030;
+    }
+    .my-background-color-light{
+      background-color: #eeeeee;
+    }
+    
+    // .mat-app-background {
+    //     $background: map-get($my-theme, background);
+    //     background-color: mat-color($background, background);
+    //   }
+  }
+  
+  // Include the mixin
+  @include mix-app-theme($my-theme);
+
+  html, body { height: 100vh; overflow: hidden; }
+  body { 
+      margin: 0; 
+      font-family: Roboto, "Helvetica Neue", sans-serif; 
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none;   /* Chrome/Safari/Opera */
+      -khtml-user-select: none;    /* Konqueror */
+      -moz-user-select: none;      /* Firefox */
+      -ms-user-select: none;       /* Internet Explorer/Edge */
+      user-select: none;           /* Non-prefixed version, currently
+                                      not supported by any browser */ 
+      // background-color: #323232;
+  }
