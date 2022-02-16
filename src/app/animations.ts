@@ -1,6 +1,6 @@
 import { animate, animateChild, group, query, style, transition, trigger } from "@angular/animations";
 
-export const slideInAnimation =
+export const slideInAnimation = 
     trigger('routeAnimations', [
         transition('* => isRight', [
             style({ position: 'relative' }),

@@ -24,39 +24,11 @@ import { AppComponent } from 'src/app/app.component';
 import { slideInAnimation } from 'src/app/animations';
 import { MessagingService } from 'src/app/services/messaging.service';
 
-class CustomPaginator extends MatPaginatorIntl {
-
-  override itemsPerPageLabel = 'Показано результатов на странице';
-  override nextPageLabel = 'Следующая страница'
-  override previousPageLabel = 'Предыдущая страница'
-  override getRangeLabel = (page: number, pageSize: number, length: number) => {
-    return ((page * pageSize) + 1) + ' - ' + ((page * pageSize) + pageSize) + ' из ' + length;
-}
-  constructor() {
-    super();
-  }
-}
-
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
-  providers: [
-    { provide: MatPaginatorIntl, useClass: CustomPaginator }
-  ],
-  animations: [
-    // trigger('openClose', [
-    //   state('closed', style({ transform: 'rotate(0)' })),
-    //   state('open', style({ transform: 'rotate(-360deg)' })),
-    //   transition('open => closed', [
-    //       animate('1s')
-    //     ]),
-    //     transition('closed => open', [
-    //       animate('1s')
-    //     ]),   
-    // ]),
-    
-  ],
+  providers: []
 })
 
 
@@ -125,14 +97,14 @@ ngOnInit() {
     this.clicked = true;
     this.sort.direction = 'desc'    
     // this.sortData(this.sort)    
-    const currentUser = this.dataService.checkAuth();
-    console.log('current user ',currentUser)
-    if(currentUser?.currentUser == null){
-      this.router.navigateByUrl('authorization');
+    //const currentUser = this.dataService.checkAuth();
+    console.log('current user ',this.currentUser)
+    if(this.currentUser == null){
+      this.currentUser = getAuth();
     }
     else {
 
-      onAuthStateChanged(currentUser!, async (user) => {
+      onAuthStateChanged(this.currentUser!, async (user) => {
         if (user) {    
           this.dataService.change(true);    
           this.mainFunction.onChanged(true);  
@@ -141,7 +113,7 @@ ngOnInit() {
           this.requirePermissions(phone!, user);
             //регистрация токена устройства
             const token = this.messages.token.then(res => {
-              console.log(res);
+              console.log('results from token2: ', res);
               this.dataService.token.phoneNumber = user.phoneNumber!;
               this.dataService.token.token = res;
               this.dataService.registerTokenForUser(this.dataService.token)
@@ -160,7 +132,7 @@ ngOnInit() {
           setInterval(() => {
             this.isLoadingIcon = false;
             this.isPageLoaded = true;
-            //this.router.navigateByUrl('authorization');
+            this.router.navigateByUrl('authorization');
           }, 3000)
           // User is signed out
           // this.isLogged = false;
@@ -306,21 +278,6 @@ ngOnInit() {
 
   }
 
-  // sortByDate(sort: Sort){
-  //   const isAsc = sort.direction === 'asc';
-  //   const data = this.sortedData.slice();
-  //   console.log(sort)
-  //   if (!sort.active || sort.direction === '') {
-  //     return;
-  //   }
-  //   data.sort((a, b) => {
-  //     const date1 = new Date(a.device.dateToAdd)
-  //     const date2 = new Date(b.device.dateToAdd)      
-  //     return (date2.getDate() - date1.getDate()) * (isAsc ? 1: -1);
-  //   }) 
-
-  //   console.log(data)   
-  // }
 
   applyFilter(event: Event) {
         

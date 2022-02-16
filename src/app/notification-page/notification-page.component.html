@@ -1,9 +1,21 @@
-<!-- <div *ngIf="message; else elseBlock" class="main-container">
+<div class="notif" *ngIf="!show ; else elseBlock">
     <p>Пока что нет уведомлений</p>
     <div class="image">
         <img src="../../assets/img/notification.jpg">
     </div>
-</div> -->
-<div>
-    {{ message | async | json }}
 </div>
+<ng-template #elseBlock>          
+      <div>
+        <mat-list>
+            <div mat-subheader>Уведомления</div>            
+            <mat-list-item *ngFor="let notification of data">
+              <mat-icon mat-list-icon>question_answer</mat-icon>
+              <div mat-line>{{notification.title}}</div>
+              <div mat-line>{{notification.body}}</div>
+              <div mat-line> {{currentDate | date: 'd MMMM y, HH:mm'}} </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>            
+          </mat-list>        
+      </div>     
+      
+</ng-template>

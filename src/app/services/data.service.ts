@@ -10,11 +10,13 @@ import { Client } from '../interfaces/client';
 import { Device } from '../interfaces/device';
 import * as CryptoJS from "crypto-js"
 import { UserToken } from '../interfaces/user-token';
+import { Notifications } from '../interfaces/notification';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
+  
   public url = "https://database.gopr-service.com.ua/api/ClientsDevices/"
   public urlSendMessage = "https://database.gopr-service.com.ua/api/Auth/"
   public urlPost = "https://database.gopr-service.com.ua/api/ClientsDevices/"
@@ -23,6 +25,7 @@ export class DataService {
   public urlRequirePermissions = "https://database.gopr-service.com.ua/api/Admins/"  
   public urlTokens = "https://database.gopr-service.com.ua/api/Tokens"
   public urlGetToken = "https://database.gopr-service.com.ua/api/Tokens/"
+  public urlNotifications = "https://database.gopr-service.com.ua/api/Notifications/"
   cache: Map<string, Observable<Client[]>> = new Map<string, Observable<Client[]>>();
   message: boolean = false;
   public token = new UserToken;
@@ -118,8 +121,15 @@ export class DataService {
   }
 
   addUser(newClient: ClientsDevice){
-    console.log(newClient)
     return this._http.post<Client[]>(this.urlPost, newClient);
+  }
+
+  addNotificationToDataBase(message: Notifications){
+    return this._http.post(this.urlNotifications, message);
+  }
+
+  readNotificationsFromDB(){
+    return this._http.get<Notifications[]>(this.urlNotifications);
   }
   
 

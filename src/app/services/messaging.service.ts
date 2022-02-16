@@ -7,7 +7,6 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MessagingService {
   
-  
   currentMessage = new BehaviorSubject({});
   constructor() {
     onMessage(this.messaging, (payload) => {
@@ -22,7 +21,7 @@ export class MessagingService {
     if (currentToken) {
       // Send the token to your server and update the UI if necessary
       // ...
-      console.log(currentToken)
+      console.log('token from service: ',currentToken)
       return currentToken;
     } else {
       // Show permission request UI
