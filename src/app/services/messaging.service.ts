@@ -10,7 +10,7 @@ export class MessagingService {
   currentMessage = new BehaviorSubject({});
   constructor() {
     onMessage(this.messaging, (payload) => {
-      console.log('Message received. ', payload);
+      console.log('Message received. service', payload);
       this.currentMessage.next(payload)          
       });
   }

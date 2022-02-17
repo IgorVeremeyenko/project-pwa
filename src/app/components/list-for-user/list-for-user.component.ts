@@ -65,6 +65,7 @@ export class ListForUserComponent implements OnInit {
         this.mainFunction.onChanged(true);  
         this.isLoadingIcon = false;
         const phone = user.phoneNumber
+        this.dataService.phoneNumber = phone!;
         this.getDeviceToken();
         this.dataService.getDevicesByUser(user.phoneNumber!)
         .subscribe((data: Device[]) => {

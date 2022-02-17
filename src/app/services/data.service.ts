@@ -29,6 +29,7 @@ export class DataService {
   cache: Map<string, Observable<Client[]>> = new Map<string, Observable<Client[]>>();
   message: boolean = false;
   public token = new UserToken;
+  public phoneNumber!: string;
 
   private getMd5(obj: any): string {
     const hash = CryptoJS.MD5(CryptoJS.enc.Latin1.parse(obj));
@@ -95,6 +96,24 @@ export class DataService {
   getTokenByPhone(phoneNumber: string){
     return this._http.get<UserToken>(this.urlGetToken + phoneNumber);
   }
+  addNotificationToDataBase(phone: string, data: Client){
+   
+    const notification = {
+      id: 0,
+      title: "Ваша техника готова, " + data.device.deviceName + " !",
+      body: "Приезжайте, забирайте.",
+      dateToAdd: new Date,
+      isRead: false,
+      clientId: 0,
+      client: {
+        id: 0,
+        phoneNumber: "",
+        name: "",
+        email: "",
+      }
+    }
+    return this._http.post(this.urlNotifications + phone, notification);
+  }
 
   sendNotification(token: string, tech: string){
     
@@ -124,13 +143,17 @@ export class DataService {
     return this._http.post<Client[]>(this.urlPost, newClient);
   }
 
-  addNotificationToDataBase(message: Notifications){
-    return this._http.post(this.urlNotifications, message);
-  }
 
   readNotificationsFromDB(){
-    return this._http.get<Notifications[]>(this.urlNotifications);
+    return this._http.get<Notifications[]>(this.urlNotifications + this.phoneNumber);
   }
   
 
+}
+
+class Clients {
+  id!: number;
+  phoneNumber!: string;
+  Name!: string;
+  Email!: string;
 }

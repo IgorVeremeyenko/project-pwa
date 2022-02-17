@@ -25,7 +25,7 @@ onBackgroundMessage(messaging, (payload) => {
    notificationOptions);
 });
 onMessage(messaging, (payload) => {
-  console.log('Message received. ', payload);
+  console.log('Message received. js', payload);
   // ...
 });
 // [END messaging_receive_message_modular]

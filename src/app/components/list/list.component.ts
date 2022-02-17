@@ -110,6 +110,7 @@ ngOnInit() {
           this.mainFunction.onChanged(true);  
           this.isLoadingIcon = false;
           const phone = user.phoneNumber
+          this.dataService.phoneNumber = phone!;
           this.requirePermissions(phone!, user);
             //регистрация токена устройства
             const token = this.messages.token.then(res => {

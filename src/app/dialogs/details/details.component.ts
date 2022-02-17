@@ -9,6 +9,7 @@ import { Client } from 'src/app/interfaces/client';
 import { DataService } from 'src/app/services/data.service';
 import { SureComponent } from '../sure/sure.component';
 import { UserToken } from 'src/app/interfaces/user-token';
+import { Notifications } from 'src/app/interfaces/notification';
 
 @Component({
   selector: 'app-details',
@@ -72,10 +73,18 @@ export class DetailsComponent implements OnInit {
           this.isLoading = !this.isLoading;
           console.log('phone number from data ', this.phone)
           this.dataService.getTokenByPhone(this.phone)
-          .subscribe((t: UserToken) => {                        
-          console.log('token from base: ', t);
+          .subscribe((t: UserToken) => {  
+                            
+          console.log('token from base: ', t);          
           this.dataService.sendNotification(t.token!, this.data.device.deviceName)
-          .subscribe(t => console.log('send notification ', t), error => console.log('send notigication error ', error));
+          .subscribe(t => {
+            console.log('send notification ', t);            
+            this.dataService.addNotificationToDataBase(this.phone, this.data)
+            .subscribe(result => {
+              console.log('result from db notifications: ', result)
+              
+            }, error => console.log('error from db notifications: ', error))
+          }, error => console.log('send notigication error ', error));
         }, error => console.log('phone from base ', error))
           this.dialogRef.close({data: 'fetched'});
         }, error => {

@@ -162,16 +162,12 @@ export class AddClientComponent implements OnInit {
     }
   }
 
-
-
   get f() {
     return this.phoneFormGroup.get('number')!;
   }
 }
 
 export class ClientsDevice { 
-  clientId: number = 0;
-  deviceId: number = 0;
   client: User = new User();
   device: UserDevice = new UserDevice();
 }
